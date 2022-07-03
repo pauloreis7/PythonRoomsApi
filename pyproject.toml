@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.10"
 uvicorn = "^0.18.2"
 fastapi = "^0.78.0"
+pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.14.4"
