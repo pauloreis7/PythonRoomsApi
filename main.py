@@ -4,6 +4,12 @@ from api.users import users_router
 from api.courses import courses_router
 from api.sections import sections_router
 
+from database.db_setup import engine
+from database.models import user, course
+
+user.Base.metadata.create_all(bind=engine)
+course.Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="Fast API LMS",
     description="LMS for managing students and courses.",

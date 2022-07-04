@@ -45,7 +45,6 @@ class Section(Timestamp, Base):
     course = relationship("Course", back_populates="sections")
     content_blocks = relationship("ContentBlock", back_populates="section")
 
-
 class ContentBlock(Timestamp, Base):
     """Class to ContentBlock entity"""
 
@@ -54,7 +53,7 @@ class ContentBlock(Timestamp, Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    type = Column(Enum(ContentType))
+    type: ContentType = Column(Enum(ContentType))
     url = Column(URLType, nullable=True)
     content = Column(Text, nullable=True)
     section_id = Column(Integer, ForeignKey("sections.id"), nullable=False)
