@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 
 from database.db_setup import get_db
 from pydantic_schemas.user import UserCreate, User
+from pydantic_schemas.course import Course
 from api.utils.users import get_user, get_user_by_email, get_users, create_user
+from api.utils.courses import get_user_courses
 
 users_router = APIRouter()
 
@@ -45,3 +47,8 @@ async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="User already exists!")
 
     return create_user(db=db, user=user)
+
+@users_router.get("/users/{user_id}/courses", response_model=List[Course])
+async def read_user_courses(user_id: int, db: Session = Depends(get_db)):
+    courses = get_user_courses(db=db, user_id=user_id)
+    return courses
