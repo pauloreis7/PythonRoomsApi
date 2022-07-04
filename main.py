@@ -1,41 +1,22 @@
-from typing import Optional, List
+from fastapi import FastAPI
 
-from fastapi import FastAPI, Path, Query
-from pydantic import BaseModel
+from api.users import users_router
+from api.courses import courses_router
+from api.sections import sections_router
 
-app = FastAPI()
+app = FastAPI(
+    title="Fast API LMS",
+    description="LMS for managing students and courses.",
+    version="0.0.1",
+    contact={
+        "name": "Paulo",
+        "email": "paulosilvadosreis2057@gmail.com",
+    },
+    license_info={
+        "name": "MIT",
+    },
+)
 
-users = []
-
-class User(BaseModel):
-    """Users class attributes"""
-
-    name: str
-    email: str
-    password: str
-    bio: Optional[str]
-
-@app.get('/users', response_model=List[User])
-async def list_users():
-    """Get all users list"""
-
-    return users
-
-@app.get('/users/{user_index}')
-async def find_user(
-    user_index: int = Path(..., description='User index to retrieve', gt=1),
-    query: str = Query(None, max_length=5)
-):
-    """Find user"""
-
-    user = users[user_index]
-
-    return {'user': user, 'query': query}
-
-@app.post('/users')
-async def create_user(user: User):
-    """Create a user"""
-
-    users.append(user)
-
-    return {'msg': True}
+app.include_router(users_router)
+app.include_router(courses_router)
+app.include_router(sections_router)
