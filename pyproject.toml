@@ -10,6 +10,8 @@ python = "^3.10"
 uvicorn = "^0.18.2"
 fastapi = "^0.78.0"
 pydantic = "^1.9.1"
+SQLAlchemy = "^1.4.39"
+SQLAlchemy-Utils = "^0.38.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.14.4"
