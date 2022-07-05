@@ -1,11 +1,12 @@
 from typing import List
+from xmlrpc.client import Boolean
 
 from fastapi import APIRouter, Query, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.db_setup import get_db
-from pydantic_schemas.course import Course, CourseCreate
-from api.utils.courses import get_course, get_courses, create_course
+from pydantic_schemas.course import Course, CourseCreate, CoursePatch
+from api.utils.courses import get_course, get_courses, create_course, patch_course
 
 courses_router = APIRouter()
 
@@ -42,11 +43,22 @@ async def read_course(course_id: int, db: Session = Depends(get_db)):
     return db_course
 
 
-@courses_router.patch("/courses/{id}")
-async def update_course():
+@courses_router.patch("/courses/{course_id}", response_model=Boolean)
+async def update_course(
+    course_id: int,
+    course: CoursePatch,
+    db: Session = Depends(get_db),
+):
     """Update a course"""
 
-    return {"courses": []}
+    db_course = get_course(db=db, course_id=course_id)
+
+    if db_course is None:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    db_patch_course = patch_course(db=db, course_id=course_id, course=course)
+
+    return db_patch_course
 
 
 @courses_router.delete("/courses/{id}")

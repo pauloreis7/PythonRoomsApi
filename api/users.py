@@ -55,4 +55,5 @@ async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
 async def read_user_courses(user_id: int, db: Session = Depends(get_db)):
     courses = get_user_courses(db=db, user_id=user_id)
+
     return courses

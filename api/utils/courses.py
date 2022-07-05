@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from database.models.course import Course
-from pydantic_schemas.course import CourseCreate
+from pydantic_schemas.course import CourseCreate, CoursePatch
 
 
 def get_course(db: Session, course_id: int):
@@ -27,3 +27,16 @@ def create_course(db: Session, course: CourseCreate):
     db.commit()
     db.refresh(db_course)
     return db_course
+
+
+def patch_course(db: Session, course_id: int, course: CoursePatch):
+    db.query(Course).filter(Course.id == course_id).update(
+        {
+            Course.title: course.title,
+            Course.description: course.description,
+        }
+    )
+
+    db.commit()
+
+    return True
