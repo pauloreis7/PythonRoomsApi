@@ -30,6 +30,7 @@ extension-pkg-allow-list=
 # run arbitrary code. (This is an alternative name to extension-pkg-allow-list
 # for backward compatibility.)
 extension-pkg-whitelist=pydantic
+extension-pkg-whitelist=alembic
 
 # Return non-zero exit code if any of these messages/categories are detected,
 # even if score is above --fail-under value. Syntax same as enable. Messages
