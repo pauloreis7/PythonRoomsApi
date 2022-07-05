@@ -9,11 +9,13 @@ async def read_section():
 
     return {"courses": []}
 
+
 @sections_router.get("/sections/{id}/content-blocks")
 async def read_section_content_blocks():
     """Get a section content blocks"""
 
     return {"courses": []}
+
 
 @sections_router.get("/content-blocks/{id}")
 async def read_content_block():

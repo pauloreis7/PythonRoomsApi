@@ -20,9 +20,7 @@ def get_user_courses(db: Session, user_id: int):
 
 def create_course(db: Session, course: CourseCreate):
     db_course = Course(
-        title=course.title,
-        description=course.description,
-        user_id=course.user_id
+        title=course.title, description=course.description, user_id=course.user_id
     )
 
     db.add(db_course)

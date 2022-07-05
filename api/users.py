@@ -11,11 +11,12 @@ from api.utils.courses import get_user_courses
 
 users_router = APIRouter()
 
-@users_router.get('/users', response_model=List[User])
+
+@users_router.get("/users", response_model=List[User])
 async def read_users(
-    skip: int = Query(0, description='skip items in pagination'),
-    limit: int = Query(100, description='limit items in pagination'),
-    db: Session = Depends(get_db)
+    skip: int = Query(0, description="skip items in pagination"),
+    limit: int = Query(100, description="limit items in pagination"),
+    db: Session = Depends(get_db),
 ):
     """Get all users list"""
 
@@ -23,10 +24,11 @@ async def read_users(
 
     return users
 
-@users_router.get('/users/{user_id}', response_model=User)
+
+@users_router.get("/users/{user_id}", response_model=User)
 async def find_user(
-    user_id: int = Path(..., description='User id to retrieve'),
-    db: Session = Depends(get_db)
+    user_id: int = Path(..., description="User id to retrieve"),
+    db: Session = Depends(get_db),
 ):
     """Find a user"""
 
@@ -37,7 +39,8 @@ async def find_user(
 
     return find_user_in_db
 
-@users_router.post('/users', response_model=User, status_code=201)
+
+@users_router.post("/users", response_model=User, status_code=201)
 async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create a user"""
 
@@ -47,6 +50,7 @@ async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="User already exists!")
 
     return create_user(db=db, user=user)
+
 
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
 async def read_user_courses(user_id: int, db: Session = Depends(get_db)):

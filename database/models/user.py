@@ -6,11 +6,13 @@ from sqlalchemy.orm import relationship
 from ..db_setup import Base
 from .mixins import Timestamp
 
+
 class Role(enum.IntEnum):
     """Class to Role used in Profile entity"""
 
     teacher = 1
     student = 2
+
 
 class User(Timestamp, Base):
     """Class to User entity"""
@@ -27,6 +29,7 @@ class User(Timestamp, Base):
     student_content_blocks = relationship(
         "CompletedContentBlock", back_populates="student"
     )
+
 
 class Profile(Timestamp, Base):
     """Class to Profile entity"""
