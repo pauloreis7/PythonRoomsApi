@@ -40,3 +40,11 @@ def patch_course(db: Session, course_id: int, course: CoursePatch):
     db.commit()
 
     return True
+
+
+def delete_db_course(db: Session, course_id: int):
+    db.query(Course).filter(Course.id == course_id).delete()
+
+    db.commit()
+
+    return True
