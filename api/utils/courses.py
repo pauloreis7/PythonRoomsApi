@@ -12,8 +12,8 @@ def get_courses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Course).offset(skip).limit(limit).all()
 
 
-def get_user_courses(db: Session, user_id: int):
-    courses = db.query(Course).filter(Course.user_id == user_id).all()
+def get_user_courses(session: Session, user_id: int):
+    courses = session.query(Course).filter(Course.user_id == user_id).all()
 
     return courses
 
