@@ -40,7 +40,7 @@ async def find_user(
     return check_user_exists
 
 
-@users_router.post("/users", response_model=User, status_code=201)
+@users_router.post("/users", response_model=bool, status_code=201)
 async def create_new_user(
     user: UserCreate = Body(..., description="User data to create"),
     db_session: Session = Depends(get_db),
@@ -52,9 +52,9 @@ async def create_new_user(
     if check_user_exists:
         raise HTTPException(status_code=400, detail="User already exists!")
 
-    user = create_user(session=db_session, user=user)
+    create_user_response = create_user(session=db_session, user=user)
 
-    return user
+    return create_user_response
 
 
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
@@ -69,6 +69,6 @@ async def read_user_courses(
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    courses = get_user_courses(session=db_session, user_id=user_id)
+    user_courses = get_user_courses(session=db_session, user_id=user_id)
 
-    return courses
+    return user_courses

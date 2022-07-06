@@ -37,4 +37,4 @@ def create_user(session: Session, user: UserCreate):
     session.commit()
     session.refresh(created_user)
 
-    return created_user
+    return True
