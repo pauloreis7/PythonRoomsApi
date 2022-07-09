@@ -10,8 +10,8 @@ from api.utils.courses import (
     get_course_by_id,
     get_course_by_title,
     get_courses,
-    create_course,
-    patch_course,
+    create_db_course,
+    patch_db_course,
     delete_db_course,
 )
 
@@ -32,8 +32,8 @@ async def read_courses(
 
 
 @courses_router.get("/courses/{course_id}", response_model=Course)
-async def read_course(
-    course_id: int = Path(..., description="Course id to read", gt=0),
+async def find_course(
+    course_id: int = Path(..., description="Course id to retrieve", gt=0),
     db_session: Session = Depends(get_db),
 ):
     """Get a course"""
@@ -46,8 +46,8 @@ async def read_course(
     return check_course_exists
 
 
-@courses_router.post("/courses", response_model=bool)
-async def create_new_course(
+@courses_router.post("/courses", response_model=bool, status_code=201)
+async def create_course(
     course: CourseCreate = Body(..., description="Course data to create"),
     db_session: Session = Depends(get_db),
 ):
@@ -65,29 +65,29 @@ async def create_new_course(
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    create_course_response = create_course(session=db_session, course=course)
+    create_db_course_response = create_db_course(session=db_session, course=course)
 
-    return create_course_response
+    return create_db_course_response
 
 
 @courses_router.patch("/courses/{course_id}", response_model=bool)
-async def update_course(
-    course_id: int = Path(..., description="Course id to update", gt=0),
-    course: CoursePatch = Body(..., description="Course data to update"),
+async def patch_course(
+    course_id: int = Path(..., description="Course id to patch", gt=0),
+    course: CoursePatch = Body(..., description="Course data to patch"),
     db_session: Session = Depends(get_db),
 ):
-    """Update a course"""
+    """Patch a course"""
 
     check_course_exists = get_course_by_id(session=db_session, course_id=course_id)
 
     if check_course_exists is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    patch_course_response = patch_course(
+    patch_db_course_response = patch_db_course(
         session=db_session, course_id=course_id, course=course
     )
 
-    return patch_course_response
+    return patch_db_course_response
 
 
 @courses_router.delete("/courses/{course_id}", response_model=bool)
@@ -102,9 +102,11 @@ async def delete_course(
     if check_course_exists is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    delete_course_response = delete_db_course(session=db_session, course_id=course_id)
+    delete_db_course_response = delete_db_course(
+        session=db_session, course_id=course_id
+    )
 
-    return delete_course_response
+    return delete_db_course_response
 
 
 # @courses_router.get("/courses/{id}/sections")

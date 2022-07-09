@@ -46,7 +46,7 @@ def create_section(session: Session, section: SectionCreate):
     return True
 
 
-def patch_section(session: Session, section_id: int, section: SectionPatch):
+def patch_db_section(session: Session, section_id: int, section: SectionPatch):
     """Patch a section"""
 
     session.query(Section).filter(Section.id == section_id).update(

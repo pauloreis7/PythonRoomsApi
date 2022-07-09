@@ -40,7 +40,7 @@ class Section(Timestamp, Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    type: ContentType = Column(Enum(ContentType), nullable=False)
+    contentType: ContentType = Column(Enum(ContentType), nullable=False)
     grade_media = Column(SmallInteger, default=0, nullable=True)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
 

@@ -28,7 +28,7 @@ def get_users(session: Session, skip: int = 0, limit: int = 100):
     return users
 
 
-def create_user(session: Session, user: UserCreate):
+def create_db_user(session: Session, user: UserCreate):
     """Create a user"""
 
     created_user = User(

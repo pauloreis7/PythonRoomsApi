@@ -7,7 +7,7 @@ from database.db_setup import get_db
 from pydantic_schemas.user import UserCreate, User
 
 from pydantic_schemas.course import Course
-from api.utils.users import get_user_by_id, get_user_by_email, get_users, create_user
+from api.utils.users import get_user_by_id, get_user_by_email, get_users, create_db_user
 
 from api.utils.courses import get_user_courses
 
@@ -42,26 +42,9 @@ async def find_user(
     return check_user_exists
 
 
-@users_router.post("/users", response_model=bool, status_code=201)
-async def create_new_user(
-    user: UserCreate = Body(..., description="User data to create"),
-    db_session: Session = Depends(get_db),
-):
-    """Create a user"""
-
-    check_user_exists = get_user_by_email(session=db_session, email=user.email)
-
-    if check_user_exists:
-        raise HTTPException(status_code=400, detail="User already exists!")
-
-    create_user_response = create_user(session=db_session, user=user)
-
-    return create_user_response
-
-
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
 async def read_user_courses(
-    user_id: int = Path(..., description="User id to get courses"),
+    user_id: int = Path(..., description="User id to retrieve courses"),
     db_session: Session = Depends(get_db),
 ):
     """Find user's course"""
@@ -74,3 +57,20 @@ async def read_user_courses(
     user_courses = get_user_courses(session=db_session, user_id=user_id)
 
     return user_courses
+
+
+@users_router.post("/users", response_model=bool, status_code=201)
+async def create_user(
+    user: UserCreate = Body(..., description="User data to create"),
+    db_session: Session = Depends(get_db),
+):
+    """Create a user"""
+
+    check_user_exists = get_user_by_email(session=db_session, email=user.email)
+
+    if check_user_exists:
+        raise HTTPException(status_code=400, detail="User already exists!")
+
+    create_db_user_response = create_db_user(session=db_session, user=user)
+
+    return create_db_user_response

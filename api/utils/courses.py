@@ -36,7 +36,7 @@ def get_user_courses(session: Session, user_id: int):
     return courses
 
 
-def create_course(session: Session, course: CourseCreate):
+def create_db_course(session: Session, course: CourseCreate):
     """Create a course"""
 
     created_course = Course(
@@ -53,7 +53,7 @@ def create_course(session: Session, course: CourseCreate):
     return True
 
 
-def patch_course(session: Session, course_id: int, course: CoursePatch):
+def patch_db_course(session: Session, course_id: int, course: CoursePatch):
     """Patch a course"""
 
     session.query(Course).filter(Course.id == course_id).update(
