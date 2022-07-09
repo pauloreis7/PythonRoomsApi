@@ -1,6 +1,7 @@
 import enum
 
 from sqlalchemy import Boolean, Column, Integer, String, Enum, Text
+from sqlalchemy.orm import relationship
 
 from ..db_setup import Base
 from .mixins import Timestamp
@@ -25,3 +26,5 @@ class User(Timestamp, Base):
     bio = Column(Text, nullable=True)
     role: Role = Column(Enum(Role))
     is_active = Column(Boolean, default=False)
+
+    courses = relationship("Course", back_populates="created_by")
