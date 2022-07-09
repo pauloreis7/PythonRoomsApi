@@ -40,7 +40,10 @@ def create_course(session: Session, course: CourseCreate):
     """Create a course"""
 
     created_course = Course(
-        title=course.title, description=course.description, user_id=course.user_id
+        title=course.title,
+        description=course.description,
+        url=course.url,
+        user_id=course.user_id,
     )
 
     session.add(created_course)
@@ -57,6 +60,7 @@ def patch_course(session: Session, course_id: int, course: CoursePatch):
         {
             Course.title: course.title,
             Course.description: course.description,
+            Course.url: course.url,
         }
     )
 

@@ -31,7 +31,14 @@ def get_users(session: Session, skip: int = 0, limit: int = 100):
 def create_user(session: Session, user: UserCreate):
     """Create a user"""
 
-    created_user = User(email=user.email, role=user.role)
+    created_user = User(
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        bio=user.bio,
+        role=user.role,
+        is_active=user.is_active,
+    )
 
     session.add(created_user)
     session.commit()
