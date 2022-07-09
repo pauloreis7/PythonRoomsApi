@@ -5,9 +5,11 @@ from sqlalchemy.orm import Session
 
 from database.db_setup import get_db
 from pydantic_schemas.user import UserCreate, User
-from pydantic_schemas.course import Course
+
+# from pydantic_schemas.course import Course
 from api.utils.users import get_user_by_id, get_user_by_email, get_users, create_user
-from api.utils.courses import get_user_courses
+
+# from api.utils.courses import get_user_courses
 
 users_router = APIRouter()
 
@@ -57,18 +59,18 @@ async def create_new_user(
     return create_user_response
 
 
-@users_router.get("/users/{user_id}/courses", response_model=List[Course])
-async def read_user_courses(
-    user_id: int = Path(..., description="User id to get courses"),
-    db_session: Session = Depends(get_db),
-):
-    """Find user's course"""
+# @users_router.get("/users/{user_id}/courses", response_model=List[Course])
+# async def read_user_courses(
+#     user_id: int = Path(..., description="User id to get courses"),
+#     db_session: Session = Depends(get_db),
+# ):
+#     """Find user's course"""
 
-    check_user_exists = get_user_by_id(session=db_session, user_id=user_id)
+#     check_user_exists = get_user_by_id(session=db_session, user_id=user_id)
 
-    if check_user_exists is None:
-        raise HTTPException(status_code=404, detail="User not found")
+#     if check_user_exists is None:
+#         raise HTTPException(status_code=404, detail="User not found")
 
-    user_courses = get_user_courses(session=db_session, user_id=user_id)
+#     user_courses = get_user_courses(session=db_session, user_id=user_id)
 
-    return user_courses
+#     return user_courses

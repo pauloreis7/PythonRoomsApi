@@ -6,5 +6,7 @@ from sqlalchemy.orm import declarative_mixin
 
 @declarative_mixin
 class Timestamp:
+    """Default usefull entities timestamps"""
+
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
