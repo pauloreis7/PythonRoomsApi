@@ -34,7 +34,7 @@ def create_section(session: Session, section: SectionCreate):
     create_section = Section(
         title=section.title,
         description=section.description,
-        type=section.type,
+        content_type=section.content_type,
         grade_media=section.grade_media,
         course_id=section.course_id,
     )
@@ -53,7 +53,7 @@ def patch_db_section(session: Session, section_id: int, section: SectionPatch):
         {
             Section.title: section.title,
             Section.description: section.description,
-            Section.type: section.type,
+            Section.content_type: section.content_type,
             Section.grade_media: section.grade_media,
         }
     )

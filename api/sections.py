@@ -56,7 +56,7 @@ async def create_new_section(
     )
 
     if check_course_exists is None:
-        raise HTTPException(status_code=404, detail="Course section not found")
+        raise HTTPException(status_code=404, detail="Course not found")
 
     create_section_response = create_section(session=db_session, section=section)
 

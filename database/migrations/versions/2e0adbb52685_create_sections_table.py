@@ -28,7 +28,7 @@ def upgrade() -> None:
         sa.Column("title", sa.String(length=200), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column(
-            "type",
+            "content_type",
             sa.Enum("lesson", "quiz", "assignment", name="contenttype"),
             nullable=False,
         ),

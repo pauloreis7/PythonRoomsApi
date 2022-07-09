@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class UserBase(BaseModel):
@@ -11,6 +11,12 @@ class UserBase(BaseModel):
     last_name: str
     bio: Optional[str] = None
     is_active: bool
+
+    @validator("role")
+    def role_validate_enum(cls, value):
+        if value not in [1, 2]:
+            raise ValueError("Only role 1 and 2 exists")
+        return value
 
 
 class UserCreate(UserBase):

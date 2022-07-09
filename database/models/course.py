@@ -9,8 +9,8 @@ from .user import User
 from .mixins import Timestamp
 
 
-class ContentType(enum.Enum):
-    """Class to ContentType used in ContentBlock entity"""
+class ContentType(enum.IntEnum):
+    """Class to ContentType used in Section entity"""
 
     lesson = 1
     quiz = 2
@@ -40,7 +40,7 @@ class Section(Timestamp, Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    contentType: ContentType = Column(Enum(ContentType), nullable=False)
+    content_type: ContentType = Column(Enum(ContentType), nullable=False)
     grade_media = Column(SmallInteger, default=0, nullable=True)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
 

@@ -29,7 +29,7 @@ async def read_users(
 
 @users_router.get("/users/{user_id}", response_model=User)
 async def find_user(
-    user_id: int = Path(..., description="User id to retrieve"),
+    user_id: int = Path(..., description="User id to retrieve", gt=0),
     db_session: Session = Depends(get_db),
 ):
     """Find a user"""
