@@ -1,73 +1,98 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select, insert, update, delete
 
+from api.config.connection import session
 from database.models.course import Section
 from pydantic_schemas.sections import SectionCreate, SectionPatch
 
 
-def get_section_by_id(session: Session, section_id: int):
+async def get_section_by_id(section_id: int):
     """Get a section by id"""
 
-    section = session.query(Section).filter(Section.id == section_id).first()
+    async with session() as db_session:
+        query = select(Section).where(Section.id == section_id)
 
-    return section
+        query_response = await db_session.execute(query)
+
+        section = query_response.scalars().first()
+
+        return section
 
 
-def get_sections_by_title(session: Session, title: str):
+async def get_sections_by_title(sections_title: str):
     """Get sections by title"""
 
-    sections = session.query(Section).filter(Section.title == title).all()
+    async with session() as db_session:
+        query = select(Section).where(Section.title == sections_title)
 
-    return sections
+        query_response = await db_session.execute(query)
+
+        sections = query_response.scalars().all()
+
+        return sections
 
 
-def get_course_sections(session: Session, course_id: str):
+async def get_course_sections(course_id: str):
     """Get a course's sections"""
 
-    sections = session.query(Section).filter(Section.course_id == course_id).all()
+    async with session() as db_session:
+        query = select(Section).where(Section.course_id == course_id)
 
-    return sections
+        query_response = await db_session.execute(query)
+
+        sections = query_response.scalars().all()
+
+        return sections
 
 
-def create_db_section(session: Session, section: SectionCreate):
+async def create_db_section(section: SectionCreate):
     """Create a section"""
 
-    create_section = Section(
-        title=section.title,
-        description=section.description,
-        content_type=section.content_type,
-        grade_media=section.grade_media,
-        course_id=section.course_id,
-    )
+    async with session() as db_session:
+        query = insert(Section).values(
+            title=section.title,
+            description=section.description,
+            content_type=section.content_type,
+            grade_media=section.grade_media,
+            course_id=section.course_id,
+        )
 
-    session.add(create_section)
-    session.commit()
-    session.refresh(create_section)
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return True
 
 
-def patch_db_section(session: Session, section_id: int, section: SectionPatch):
+async def patch_db_section(section_id: int, section: SectionPatch):
     """Patch a section"""
 
-    session.query(Section).filter(Section.id == section_id).update(
-        {
-            Section.title: section.title,
-            Section.description: section.description,
-            Section.content_type: section.content_type,
-            Section.grade_media: section.grade_media,
-        }
-    )
+    async with session() as db_session:
+        query = (
+            update(Section)
+            .where(Section.id == section_id)
+            .values(
+                title=section.title,
+                description=section.description,
+                content_type=section.content_type,
+                grade_media=section.grade_media,
+            )
+        )
 
-    session.commit()
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return
 
 
-def delete_db_section(session: Session, section_id: int):
+async def delete_db_section(section_id: int):
     """Delete a section"""
 
-    session.query(Section).filter(Section.id == section_id).delete()
+    async with session() as db_session:
+        query = delete(Section).where(Section.id == section_id)
 
-    session.commit()
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return

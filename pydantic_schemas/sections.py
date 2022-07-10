@@ -14,7 +14,7 @@ class SectionBase(BaseModel):
     @validator("content_type")
     def content_type_validate_enum(cls, value):
         if value not in [1, 2, 3]:
-            raise ValueError("Only role 1, 2 and 3 exists")
+            raise ValueError("Only content type 1, 2 and 3 exists")
         return value
 
 
@@ -27,6 +27,12 @@ class SectionPatch(BaseModel):
     description: Optional[str] = None
     content_type: int
     grade_media: Optional[int] = 0
+
+    @validator("content_type")
+    def content_type_validate_enum(cls, value):
+        if value not in [1, 2, 3]:
+            raise ValueError("Only content type 1, 2 and 3 exists")
+        return value
 
 
 class Section(SectionBase):
