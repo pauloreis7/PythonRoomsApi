@@ -28,11 +28,6 @@ class Course(Timestamp, Base):
     url = Column(URLType, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    created_by = relationship(User)
-    sections = relationship(
-        "Section", cascade="all, delete", back_populates="course", uselist=False
-    )
-
 
 class Section(Timestamp, Base):
     """Class to Section entity"""
@@ -45,5 +40,3 @@ class Section(Timestamp, Base):
     content_type: ContentType = Column(Enum(ContentType), nullable=False)
     grade_media = Column(SmallInteger, default=0, nullable=True)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
-
-    course = relationship("Course", back_populates="sections")

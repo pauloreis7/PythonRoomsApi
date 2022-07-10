@@ -5,10 +5,10 @@ Revises: 24fed9555ab8
 Create Date: 2022-07-09 14:00:23.338784
 
 """
-import os
-import json
 from alembic import op
 import sqlalchemy as sa
+
+from database.migrations.data.sections import sections_seed
 
 
 # revision identifiers, used by Alembic.
@@ -41,10 +41,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
 
-    with open(os.path.join(os.path.dirname(__file__), "../data/sections.json")) as f:
-        section_data = f.read()
-
-    op.bulk_insert(sections, json.loads(section_data))
+    op.bulk_insert(sections, sections_seed)
 
     op.create_index(op.f("ix_sections_id"), "sections", ["id"], unique=False)
     # ### end Alembic commands ###

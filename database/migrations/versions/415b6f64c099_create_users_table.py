@@ -5,10 +5,10 @@ Revises:
 Create Date: 2022-07-09 11:38:00.424453
 
 """
-import os
-import json
 from alembic import op
 import sqlalchemy as sa
+
+from database.migrations.data.users import users_seed
 
 
 # revision identifiers, used by Alembic.
@@ -34,10 +34,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
 
-    with open(os.path.join(os.path.dirname(__file__), "../data/students.json")) as f:
-        student_data = f.read()
-
-    op.bulk_insert(users, json.loads(student_data))
+    op.bulk_insert(users, users_seed)
 
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
