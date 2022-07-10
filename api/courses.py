@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 
 from database.db_setup import get_db
 from pydantic_schemas.course import Course, CourseCreate, CoursePatch
+from pydantic_schemas.sections import Section
 from api.utils.users import get_user_by_id
+from api.utils.sections import get_course_sections
 from api.utils.courses import (
     get_course_by_id,
     get_course_by_title,
@@ -44,6 +46,25 @@ async def find_course(
         raise HTTPException(status_code=404, detail="Course not found")
 
     return check_course_exists
+
+
+@courses_router.get("/courses/sections/{course_id}", response_model=List[Section])
+async def read_course_sections(
+    course_id: int = Path(..., description="Course id to retrieve sections", gt=0),
+    db_session: Session = Depends(get_db),
+):
+    """Get course's sections"""
+
+    check_course_exists = get_course_by_id(session=db_session, course_id=course_id)
+
+    if check_course_exists is None:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    course_sections_response = get_course_sections(
+        session=db_session, course_id=course_id
+    )
+
+    return course_sections_response
 
 
 @courses_router.post("/courses", response_model=bool, status_code=201)
@@ -107,10 +128,3 @@ async def delete_course(
     )
 
     return delete_db_course_response
-
-
-# @courses_router.get("/courses/{id}/sections")
-# async def read_course_sections():
-#     """Get a course sections"""
-
-#     return {"courses": []}
