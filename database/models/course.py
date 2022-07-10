@@ -26,7 +26,16 @@ class Course(Timestamp, Base):
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
     url = Column(URLType, nullable=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    created_by = relationship(User)
+    sections = relationship(
+        "Section", back_populates="course", cascade="all, delete", uselist=False
+    )
 
 
 class Section(Timestamp, Base):
@@ -39,4 +48,10 @@ class Section(Timestamp, Base):
     description = Column(Text, nullable=True)
     content_type: ContentType = Column(Enum(ContentType), nullable=False)
     grade_media = Column(SmallInteger, default=0, nullable=True)
-    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    course_id = Column(
+        Integer,
+        ForeignKey("courses.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    course = relationship("Course", back_populates="sections")
