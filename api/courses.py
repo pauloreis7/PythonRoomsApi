@@ -91,7 +91,7 @@ async def create_course(
     return create_db_course_response
 
 
-@courses_router.patch("/courses/{course_id}", response_model=bool)
+@courses_router.patch("/courses/{course_id}", status_code=204)
 async def patch_course(
     course_id: int = Path(..., description="Course id to patch", gt=0),
     course: CoursePatch = Body(..., description="Course data to patch"),
@@ -111,7 +111,7 @@ async def patch_course(
     return patch_db_course_response
 
 
-@courses_router.delete("/courses/{course_id}", response_model=bool)
+@courses_router.delete("/courses/{course_id}", status_code=204)
 async def delete_course(
     course_id: int = Path(..., description="Course id to delete", gt=0),
     db_session: Session = Depends(get_db),

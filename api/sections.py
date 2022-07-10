@@ -63,7 +63,7 @@ async def create_section(
     return create_db_section_response
 
 
-@sections_router.patch("/sections/{section_id}", response_model=bool)
+@sections_router.patch("/sections/{section_id}", status_code=204)
 async def patch_section(
     section_id: int = Path(..., description="Section id to patch", gt=0),
     section: SectionPatch = Body(..., description="Section data to patch"),
@@ -84,7 +84,7 @@ async def patch_section(
     return patch_db_section_response
 
 
-@sections_router.delete("/sections/{section_id}", response_model=bool)
+@sections_router.delete("/sections/{section_id}", status_code=204)
 async def delete_section(
     section_id: int = Path(..., description="Section id to delete", gt=0),
     db_session: Session = Depends(get_db),

@@ -4,7 +4,7 @@ from sqlalchemy import Enum, Column, ForeignKey, Integer, SmallInteger, String, 
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import URLType
 
-from ..db_setup import Base
+from api.config.base import Base
 from .user import User
 from .mixins import Timestamp
 
