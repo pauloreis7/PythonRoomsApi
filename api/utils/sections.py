@@ -28,7 +28,7 @@ def get_course_sections(session: Session, course_id: str):
     return sections
 
 
-def create_section(session: Session, section: SectionCreate):
+def create_db_section(session: Session, section: SectionCreate):
     """Create a section"""
 
     create_section = Section(

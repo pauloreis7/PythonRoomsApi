@@ -9,7 +9,7 @@ from api.utils.courses import get_course_by_id
 from api.utils.sections import (
     get_section_by_id,
     get_sections_by_title,
-    create_section,
+    create_db_section,
     patch_db_section,
     delete_db_section,
 )
@@ -45,7 +45,7 @@ async def read_section_by_title(
 
 
 @sections_router.post("/sections", response_model=bool, status_code=201)
-async def create_new_section(
+async def create_section(
     section: SectionCreate = Body(..., description="Course section data to create"),
     db_session: Session = Depends(get_db),
 ):
@@ -58,9 +58,9 @@ async def create_new_section(
     if check_course_exists is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    create_section_response = create_section(session=db_session, section=section)
+    create_db_section_response = create_db_section(session=db_session, section=section)
 
-    return create_section_response
+    return create_db_section_response
 
 
 @sections_router.patch("/sections/{section_id}", response_model=bool)

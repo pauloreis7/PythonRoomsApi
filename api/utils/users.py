@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from database.models.user import User
-from pydantic_schemas.user import UserCreate
+from pydantic_schemas.user import UserCreate, UserPatch
 
 
 def get_user_by_id(session: Session, user_id: int):
@@ -43,5 +43,33 @@ def create_db_user(session: Session, user: UserCreate):
     session.add(created_user)
     session.commit()
     session.refresh(created_user)
+
+    return True
+
+
+def patch_db_user(session: Session, user_id: int, user: UserPatch):
+    """Patch a user"""
+
+    session.query(User).filter(User.id == user_id).update(
+        {
+            User.email: user.email,
+            User.role: user.role,
+            User.first_name: user.first_name,
+            User.last_name: user.last_name,
+            User.bio: user.bio,
+        }
+    )
+
+    session.commit()
+
+    return True
+
+
+def delete_db_user(session: Session, user_id: int):
+    """Delete a user"""
+
+    session.query(User).filter(User.id == user_id).delete()
+
+    session.commit()
 
     return True

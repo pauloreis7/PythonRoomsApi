@@ -23,6 +23,14 @@ class UserCreate(UserBase):
     ...
 
 
+class UserPatch(BaseModel):
+    email: str
+    role: int
+    first_name: str
+    last_name: str
+    bio: Optional[str] = None
+
+
 class User(UserBase):
     id: int
     is_active: bool

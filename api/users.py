@@ -4,10 +4,17 @@ from fastapi import APIRouter, Path, Query, Body, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.db_setup import get_db
-from pydantic_schemas.user import UserCreate, User
+from pydantic_schemas.user import UserCreate, User, UserPatch
 
 from pydantic_schemas.course import Course
-from api.utils.users import get_user_by_id, get_user_by_email, get_users, create_db_user
+from api.utils.users import (
+    get_user_by_id,
+    get_user_by_email,
+    get_users,
+    create_db_user,
+    patch_db_user,
+    delete_db_user,
+)
 
 from api.utils.courses import get_user_courses
 
@@ -74,3 +81,40 @@ async def create_user(
     create_db_user_response = create_db_user(session=db_session, user=user)
 
     return create_db_user_response
+
+
+@users_router.patch("/users/{user_id}", response_model=bool)
+async def patch_user(
+    user_id: int = Path(..., description="User id to patch", gt=0),
+    user: UserPatch = Body(..., description="User data to patch"),
+    db_session: Session = Depends(get_db),
+):
+    """Patch a user"""
+
+    check_user_exists = get_user_by_id(session=db_session, user_id=user_id)
+
+    if check_user_exists is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    patch_db_user_response = patch_db_user(
+        session=db_session, user_id=user_id, user=user
+    )
+
+    return patch_db_user_response
+
+
+@users_router.delete("/users/{user_id}", response_model=bool)
+async def delete_user(
+    user_id: int = Path(..., description="User id to delete", gt=0),
+    db_session: Session = Depends(get_db),
+):
+    """Delete a user"""
+
+    check_user_exists = get_user_by_id(session=db_session, user_id=user_id)
+
+    if check_user_exists is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    delete_db_user_response = delete_db_user(session=db_session, user_id=user_id)
+
+    return delete_db_user_response
