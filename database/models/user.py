@@ -26,3 +26,5 @@ class User(Timestamp, Base):
     bio = Column(Text, nullable=True)
     role: Role = Column(Enum(Role))
     is_active = Column(Boolean, default=False)
+
+    courses = relationship("Course", cascade="all, delete", back_populates="created_by")

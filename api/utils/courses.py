@@ -1,79 +1,109 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select, insert, update, delete
 
+from api.config.connection import session
 from database.models.course import Course
 from pydantic_schemas.course import CourseCreate, CoursePatch
 
 
-def get_course_by_id(session: Session, course_id: int):
-    """Get a course by id"""
-
-    course = session.query(Course).filter(Course.id == course_id).first()
-
-    return course
-
-
-def get_course_by_title(session: Session, course_title: str):
-    """Get a course by title"""
-
-    course = session.query(Course).filter(Course.title == course_title).first()
-
-    return course
-
-
-def get_courses(session: Session, skip: int = 0, limit: int = 100):
+async def get_courses(skip: int = 0, limit: int = 100):
     """Get all courses list"""
 
-    courses = session.query(Course).offset(skip).limit(limit).all()
+    async with session() as db_session:
+        query = select(Course).offset(skip).limit(limit)
 
-    return courses
+        query_response = await db_session.execute(query)
+
+        courses = query_response.scalars().all()
+
+        return courses
 
 
-def get_user_courses(session: Session, user_id: int):
+async def get_course_by_id(course_id: int):
+    """Get a course by id"""
+
+    async with session() as db_session:
+        query = select(Course).where(Course.id == course_id)
+
+        query_response = await db_session.execute(query)
+
+        course = query_response.scalars().first()
+
+        return course
+
+
+async def get_course_by_title(course_title: str):
+    """Get a course by title"""
+
+    async with session() as db_session:
+        query = select(Course).where(Course.title == course_title)
+
+        query_response = await db_session.execute(query)
+
+        courses = query_response.scalars().all()
+
+        return courses
+
+
+async def get_user_courses(user_id: int):
     """Get a user's courses"""
 
-    courses = session.query(Course).filter(Course.user_id == user_id).all()
+    async with session() as db_session:
+        query = select(Course).where(Course.user_id == user_id)
 
-    return courses
+        query_response = await db_session.execute(query)
+
+        courses = query_response.scalars().all()
+
+        return courses
 
 
-def create_db_course(session: Session, course: CourseCreate):
+async def create_db_course(course: CourseCreate):
     """Create a course"""
 
-    created_course = Course(
-        title=course.title,
-        description=course.description,
-        url=course.url,
-        user_id=course.user_id,
-    )
+    async with session() as db_session:
+        query = insert(Course).values(
+            title=course.title,
+            description=course.description,
+            url=course.url,
+            user_id=course.user_id,
+        )
 
-    session.add(created_course)
-    session.commit()
-    session.refresh(created_course)
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return True
 
 
-def patch_db_course(session: Session, course_id: int, course: CoursePatch):
+async def patch_db_course(course_id: int, course: CoursePatch):
     """Patch a course"""
 
-    session.query(Course).filter(Course.id == course_id).update(
-        {
-            Course.title: course.title,
-            Course.description: course.description,
-            Course.url: course.url,
-        }
-    )
+    async with session() as db_session:
+        query = (
+            update(Course)
+            .where(Course.id == course_id)
+            .values(
+                title=course.title,
+                description=course.description,
+                url=course.url,
+            )
+        )
 
-    session.commit()
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return
 
 
-def delete_db_course(session: Session, course_id: int):
+async def delete_db_course(course_id: int):
     """Delete a course"""
 
-    session.query(Course).filter(Course.id == course_id).delete()
+    async with session() as db_session:
+        query = delete(Course).where(Course.id == course_id)
 
-    session.commit()
+        await db_session.execute(query)
 
-    return True
+        await db_session.commit()
+
+        return

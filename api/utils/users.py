@@ -5,6 +5,19 @@ from api.config.connection import session
 from pydantic_schemas.user import UserCreate, UserPatch
 
 
+async def get_users(skip: int = 0, limit: int = 100):
+    """Get all users list"""
+
+    async with session() as db_session:
+        query = select(User).offset(skip).limit(limit)
+
+        query_response = await db_session.execute(query)
+
+        users = query_response.scalars().all()
+
+        return users
+
+
 async def get_user_by_id(user_id: int):
     """Get a user by id"""
 
@@ -18,30 +31,17 @@ async def get_user_by_id(user_id: int):
         return user
 
 
-async def get_user_by_email(email: str):
+async def get_user_by_email(user_email: str):
     """Get a user by email"""
 
     async with session() as db_session:
-        query = select(User).where(User.email == email)
+        query = select(User).where(User.email == user_email)
 
         query_response = await db_session.execute(query)
 
         user = query_response.scalars().first()
 
         return user
-
-
-async def get_users(skip: int = 0, limit: int = 100):
-    """Get all users list"""
-
-    async with session() as db_session:
-        query = select(User).offset(skip).limit(limit)
-
-        query_response = await db_session.execute(query)
-
-        users = query_response.scalars().all()
-
-        return users
 
 
 async def create_db_user(user: UserCreate):

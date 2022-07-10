@@ -2,8 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Body, HTTPException, Path, Query, Response
 
-# from database.db_setup import get_db
+from pydantic_schemas.course import Course
 from pydantic_schemas.user import User, UserCreate, UserPatch
+from api.utils.courses import get_user_courses
 
 from api.utils.users import (
     create_db_user,
@@ -44,20 +45,20 @@ async def find_user(
     return check_user_exists
 
 
-# @users_router.get("/users/{user_id}/courses", response_model=List[Course])
-# async def read_user_courses(
-#     user_id: int = Path(..., description="User id to retrieve courses"),
-# ):
-#     """Find user's course"""
+@users_router.get("/users/{user_id}/courses", response_model=List[Course])
+async def read_user_courses(
+    user_id: int = Path(..., description="User id to retrieve courses"),
+):
+    """Find user's course"""
 
-#     check_user_exists = await get_user_by_id(user_id=user_id)
+    check_user_exists = await get_user_by_id(user_id=user_id)
 
-#     if check_user_exists is None:
-#         raise HTTPException(status_code=404, detail="User not found")
+    if check_user_exists is None:
+        raise HTTPException(status_code=404, detail="User not found")
 
-#     user_courses = await get_user_courses(user_id=user_id)
+    user_courses = await get_user_courses(user_id=user_id)
 
-#     return user_courses
+    return user_courses
 
 
 @users_router.post("/users", response_model=bool, status_code=201)
@@ -66,7 +67,7 @@ async def create_user(
 ):
     """Create a user"""
 
-    check_user_exists = await get_user_by_email(email=user.email)
+    check_user_exists = await get_user_by_email(user_email=user.email)
 
     if check_user_exists:
         raise HTTPException(status_code=400, detail="User already exists!")
