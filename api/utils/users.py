@@ -1,78 +1,100 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert, update, delete
 
 from database.models.user import User
 from api.config.connection import session
+from pydantic_schemas.user import UserCreate, UserPatch
 
 
-# def get_user_by_id(session: Session, user_id: int):
-#     """Get a user by id"""
+async def get_user_by_id(user_id: int):
+    """Get a user by id"""
 
-#     user = session.query(User).filter(User.id == user_id).first()
+    async with session() as db_session:
+        query = select(User).where(User.id == user_id)
 
-#     return user
+        query_response = await db_session.execute(query)
+
+        user = query_response.scalars().first()
+
+        return user
 
 
-# def get_user_by_email(session: Session, email: str):
-#     """Get a user by email"""
+async def get_user_by_email(email: str):
+    """Get a user by email"""
 
-#     user = session.query(User).filter(User.email == email).first()
+    async with session() as db_session:
+        query = select(User).where(User.email == email)
 
-#     return user
+        query_response = await db_session.execute(query)
+
+        user = query_response.scalars().first()
+
+        return user
 
 
 async def get_users(skip: int = 0, limit: int = 100):
     """Get all users list"""
 
     async with session() as db_session:
-        query = await db_session.execute(select(User).offset(skip).limit(limit))
+        query = select(User).offset(skip).limit(limit)
 
-        users = query.scalars().all()
+        query_response = await db_session.execute(query)
+
+        users = query_response.scalars().all()
 
         return users
 
 
-# def create_db_user(session: Session, user: UserCreate):
-#     """Create a user"""
+async def create_db_user(user: UserCreate):
+    """Create a user"""
 
-#     created_user = User(
-#         email=user.email,
-#         first_name=user.first_name,
-#         last_name=user.last_name,
-#         bio=user.bio,
-#         role=user.role,
-#         is_active=user.is_active,
-#     )
+    async with session() as db_session:
+        query = insert(User).values(
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            bio=user.bio,
+            role=user.role,
+            is_active=user.is_active,
+        )
 
-#     session.add(created_user)
-#     session.commit()
-#     session.refresh(created_user)
+        await db_session.execute(query)
 
-#     return True
+        await db_session.commit()
 
-
-# def patch_db_user(session: Session, user_id: int, user: UserPatch):
-#     """Patch a user"""
-
-#     session.query(User).filter(User.id == user_id).update(
-#         {
-#             User.email: user.email,
-#             User.role: user.role,
-#             User.first_name: user.first_name,
-#             User.last_name: user.last_name,
-#             User.bio: user.bio,
-#         }
-#     )
-
-#     session.commit()
-
-#     return True
+        return True
 
 
-# def delete_db_user(session: Session, user_id: int):
-#     """Delete a user"""
+async def patch_db_user(user_id: int, user: UserPatch):
+    """Patch a user"""
 
-#     session.query(User).filter(User.id == user_id).delete()
+    async with session() as db_session:
+        query = (
+            update(User)
+            .where(User.id == user_id)
+            .values(
+                email=user.email,
+                role=user.role,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                bio=user.bio,
+            )
+        )
 
-#     session.commit()
+        await db_session.execute(query)
 
-#     return True
+        await db_session.commit()
+
+        return
+
+
+async def delete_db_user(user_id: int):
+    """Delete a user"""
+
+    async with session() as db_session:
+        query = delete(User).where(User.id == user_id)
+
+        await db_session.execute(query)
+
+        await db_session.commit()
+
+        return
