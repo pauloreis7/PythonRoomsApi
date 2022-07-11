@@ -28,3 +28,6 @@ class User(Timestamp, Base):
     is_active = Column(Boolean, default=False)
 
     courses = relationship("Course", back_populates="created_by", cascade="all, delete")
+
+    def __repr__(self) -> str:
+        return f"User [{self.first_name}, id {self.id}]"

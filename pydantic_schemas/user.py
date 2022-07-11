@@ -30,6 +30,12 @@ class UserPatch(BaseModel):
     last_name: str
     bio: Optional[str] = None
 
+    @validator("role")
+    def role_validate_enum(cls, value):
+        if value not in [1, 2]:
+            raise ValueError("Only role 1 and 2 exists")
+        return value
+
 
 class User(UserBase):
     id: int

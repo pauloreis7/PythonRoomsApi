@@ -37,6 +37,9 @@ class Course(Timestamp, Base):
         "Section", back_populates="course", cascade="all, delete", uselist=False
     )
 
+    def __repr__(self) -> str:
+        return f"Course [{self.title}, id {self.id}]"
+
 
 class Section(Timestamp, Base):
     """Class to Section entity"""
@@ -55,3 +58,6 @@ class Section(Timestamp, Base):
     )
 
     course = relationship("Course", back_populates="sections")
+
+    def __repr__(self) -> str:
+        return f"Section [{self.title}, id {self.id}]"

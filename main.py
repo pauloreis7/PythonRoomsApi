@@ -21,6 +21,7 @@ app = FastAPI(
     },
 )
 
+
 app.include_router(users_router)
 app.include_router(courses_router)
 app.include_router(sections_router)
