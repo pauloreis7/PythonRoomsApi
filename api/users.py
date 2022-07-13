@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Body, Path, Query, Response, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.connection import get_db
@@ -31,7 +33,7 @@ async def read_users(
 
     users = await get_users(db_session, skip=skip, limit=limit)
 
-    return users
+    return JSONResponse(status_code=200, content=jsonable_encoder(users))
 
 
 @users_router.get("/users/{user_id}", response_model=User)
@@ -46,7 +48,7 @@ async def find_user(
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return check_user_exists
+    return JSONResponse(status_code=200, content=jsonable_encoder(check_user_exists))
 
 
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
@@ -63,7 +65,7 @@ async def read_user_courses(
 
     user_courses = await get_user_courses(user_id=user_id)
 
-    return user_courses
+    return JSONResponse(status_code=200, content=jsonable_encoder(user_courses))
 
 
 @users_router.post("/users", response_model=bool, status_code=201)
@@ -80,7 +82,9 @@ async def create_user(
 
     create_db_user_response = await create_db_user(db_session, user=user)
 
-    return create_db_user_response
+    return JSONResponse(
+        status_code=201, content=jsonable_encoder(create_db_user_response)
+    )
 
 
 @users_router.patch("/users/{user_id}", status_code=204)

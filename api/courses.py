@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Body, Path, Query, Response, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.connection import get_db
@@ -30,7 +32,7 @@ async def read_courses(
 
     courses = await get_courses(db_session, skip=skip, limit=limit)
 
-    return courses
+    return JSONResponse(status_code=200, content=jsonable_encoder(courses))
 
 
 @courses_router.get("/courses/{course_id}", response_model=Course)
@@ -45,7 +47,7 @@ async def find_course(
     if check_course_exists is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    return check_course_exists
+    return JSONResponse(status_code=200, content=jsonable_encoder(check_course_exists))
 
 
 @courses_router.get("/courses/sections/{course_id}", response_model=List[Section])
@@ -64,7 +66,9 @@ async def read_course_sections(
         db_session, course_id=course_id
     )
 
-    return course_sections_response
+    return JSONResponse(
+        status_code=200, content=jsonable_encoder(course_sections_response)
+    )
 
 
 @courses_router.post("/courses", response_model=bool, status_code=201)
@@ -88,7 +92,9 @@ async def create_course(
 
     create_db_course_response = await create_db_course(db_session, course=course)
 
-    return create_db_course_response
+    return JSONResponse(
+        status_code=201, content=jsonable_encoder(create_db_course_response)
+    )
 
 
 @courses_router.patch("/courses/{course_id}", status_code=204)

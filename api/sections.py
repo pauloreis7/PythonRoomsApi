@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Body, Path, Query, Response, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.config.connection import get_db
@@ -29,7 +31,7 @@ async def find_section(
     if check_session_exists is None:
         raise HTTPException(status_code=404, detail="Course section not found")
 
-    return check_session_exists
+    return JSONResponse(status_code=200, content=jsonable_encoder(check_session_exists))
 
 
 @sections_router.get("/sections", response_model=List[Section])
@@ -41,7 +43,7 @@ async def read_section_by_title(
 
     sections = await get_sections_by_title(db_session, sections_title=sections_title)
 
-    return sections
+    return JSONResponse(status_code=200, content=jsonable_encoder(sections))
 
 
 @sections_router.post("/sections", response_model=bool, status_code=201)
@@ -60,7 +62,9 @@ async def create_section(
 
     create_db_section_response = await create_db_section(db_session, section=section)
 
-    return create_db_section_response
+    return JSONResponse(
+        status_code=201, content=jsonable_encoder(create_db_section_response)
+    )
 
 
 @sections_router.patch("/sections/{section_id}", status_code=204)
