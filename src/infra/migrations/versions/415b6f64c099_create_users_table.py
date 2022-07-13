@@ -8,7 +8,7 @@ Create Date: 2022-07-09 11:38:00.424453
 from alembic import op
 import sqlalchemy as sa
 
-from database.migrations.data.users import users_seed
+from src.infra.migrations.data.users import users_seed
 
 
 # revision identifiers, used by Alembic.

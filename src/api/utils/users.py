@@ -1,7 +1,7 @@
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models.user import User
+from src.infra.models.user import User
 from src.pydantic_schemas.user import UserCreate, UserPatch
 
 

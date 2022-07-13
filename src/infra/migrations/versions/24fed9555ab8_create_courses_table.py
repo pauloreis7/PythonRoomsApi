@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 import sqlalchemy_utils
 
-from database.migrations.data.courses import courses_seed
+from src.infra.migrations.data.courses import courses_seed
 
 # revision identifiers, used by Alembic.
 revision = "24fed9555ab8"

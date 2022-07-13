@@ -1,8 +1,8 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 SQLALCHEMY_DATABASE_URL = (

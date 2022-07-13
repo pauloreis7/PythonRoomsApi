@@ -62,7 +62,7 @@ async def read_user_courses(
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_courses = await get_user_courses(user_id=user_id)
+    user_courses = await get_user_courses(db_session, user_id=user_id)
 
     return JSONResponse(status_code=200, content=jsonable_encoder(user_courses))
 
