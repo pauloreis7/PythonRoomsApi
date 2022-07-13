@@ -5,12 +5,12 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.config.connection import get_db
-from pydantic_schemas.course import Course, CourseCreate, CoursePatch
-from pydantic_schemas.sections import Section
-from api.utils.sections import get_course_sections
-from api.utils.users import get_user_by_id
-from api.utils.courses import (
+from src.infra.config.connection import get_db
+from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
+from src.pydantic_schemas.sections import Section
+from src.api.utils.sections import get_course_sections
+from src.api.utils.users import get_user_by_id
+from src.api.utils.courses import (
     create_db_course,
     delete_db_course,
     get_course_by_id,

@@ -1,8 +1,8 @@
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models.user import User
-from pydantic_schemas.user import UserCreate, UserPatch
+from src.database.models.user import User
+from src.pydantic_schemas.user import UserCreate, UserPatch
 
 
 async def get_users(db_session: AsyncSession, skip: int = 0, limit: int = 100):

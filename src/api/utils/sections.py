@@ -1,8 +1,8 @@
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models.course import Section
-from pydantic_schemas.sections import SectionCreate, SectionPatch
+from src.database.models.course import Section
+from src.pydantic_schemas.sections import SectionCreate, SectionPatch
 
 
 async def get_section_by_id(db_session: AsyncSession, section_id: int):

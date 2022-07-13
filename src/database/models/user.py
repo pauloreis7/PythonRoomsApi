@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Boolean, Column, Integer, String, Enum, Text
 from sqlalchemy.orm import relationship
 
-from api.config.base import Base
+from src.infra.config.base import Base
 from .mixins import Timestamp
 
 

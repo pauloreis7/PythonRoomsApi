@@ -1,7 +1,7 @@
 [MAIN]
 
 disable = C0114, # missing-module-docstring
-ignore-patterns=./database
+ignore-patterns=./src/database/migrations
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists

@@ -5,10 +5,10 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.config.connection import get_db
-from pydantic_schemas.sections import Section, SectionCreate, SectionPatch
-from api.utils.courses import get_course_by_id
-from api.utils.sections import (
+from src.infra.config.connection import get_db
+from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
+from src.api.utils.courses import get_course_by_id
+from src.api.utils.sections import (
     get_section_by_id,
     get_sections_by_title,
     create_db_section,

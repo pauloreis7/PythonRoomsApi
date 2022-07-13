@@ -1,8 +1,8 @@
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models.course import Course
-from pydantic_schemas.course import CourseCreate, CoursePatch
+from src.database.models.course import Course
+from src.pydantic_schemas.course import CourseCreate, CoursePatch
 
 
 async def get_courses(db_session: AsyncSession, skip: int = 0, limit: int = 100):
