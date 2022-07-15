@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.config.connection import get_db
 from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
-from src.api.utils.courses import get_course_by_id
-from src.api.utils.sections import (
+from src.infra.repositories.courses import get_course_by_id
+from src.infra.repositories.sections import (
     get_section_by_id,
     get_sections_by_title,
     create_db_section,

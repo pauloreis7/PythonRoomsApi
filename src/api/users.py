@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infra.config.connection import get_db
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
-from src.api.utils.courses import get_user_courses
-from src.api.utils.users import (
+from src.infra.repositories.courses import get_user_courses
+from src.infra.repositories.users import (
     create_db_user,
     delete_db_user,
     get_user_by_email,

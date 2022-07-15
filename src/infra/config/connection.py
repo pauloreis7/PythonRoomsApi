@@ -11,12 +11,16 @@ SQLALCHEMY_DATABASE_URL = (
 
 
 def create_database_engine(connection_string: str):
+    """Create database async engine function"""
+
     engine = create_async_engine(connection_string)
 
     return engine
 
 
 async def get_db() -> AsyncGenerator:
+    """Get database session to query"""
+
     engine = create_database_engine(SQLALCHEMY_DATABASE_URL)
 
     session = sessionmaker(
