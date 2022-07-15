@@ -5,18 +5,11 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infra.config.connection import get_db
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
-from src.infra.repositories.courses import get_user_courses
-from src.infra.repositories.users import (
-    create_db_user,
-    delete_db_user,
-    get_user_by_email,
-    get_user_by_id,
-    get_users,
-    patch_db_user,
-)
+from src.infra.config.connection import get_db
+from src.infra.repositories.courses_repository import get_user_courses
+from src.infra.repositories.users_repository import UsersRepository
 
 
 users_router = APIRouter()
@@ -30,7 +23,9 @@ async def read_users(
 ):
     """Get all users list"""
 
-    users = await get_users(db_session, skip=skip, limit=limit)
+    users_repository = UsersRepository()
+
+    users = await users_repository.get_users(db_session, skip=skip, limit=limit)
 
     return JSONResponse(status_code=200, content=jsonable_encoder(users))
 
@@ -42,7 +37,11 @@ async def find_user(
 ):
     """Find a user"""
 
-    check_user_exists = await get_user_by_id(db_session, user_id=user_id)
+    users_repository = UsersRepository()
+
+    check_user_exists = await users_repository.get_user_by_id(
+        db_session, user_id=user_id
+    )
 
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -57,7 +56,11 @@ async def read_user_courses(
 ):
     """Find user's course"""
 
-    check_user_exists = await get_user_by_id(db_session, user_id=user_id)
+    users_repository = UsersRepository()
+
+    check_user_exists = await users_repository.get_user_by_id(
+        db_session, user_id=user_id
+    )
 
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -74,12 +77,18 @@ async def create_user(
 ):
     """Create a user"""
 
-    check_user_exists = await get_user_by_email(db_session, user_email=user.email)
+    users_repository = UsersRepository()
+
+    check_user_exists = await users_repository.get_user_by_email(
+        db_session, user_email=user.email
+    )
 
     if check_user_exists:
         raise HTTPException(status_code=400, detail="User already exists!")
 
-    create_db_user_response = await create_db_user(db_session, user=user)
+    create_db_user_response = await users_repository.create_db_user(
+        db_session, user=user
+    )
 
     return JSONResponse(
         status_code=201, content=jsonable_encoder(create_db_user_response)
@@ -94,12 +103,16 @@ async def patch_user(
 ):
     """Patch a user"""
 
-    check_user_exists = await get_user_by_id(db_session, user_id=user_id)
+    users_repository = UsersRepository()
+
+    check_user_exists = await users_repository.get_user_by_id(
+        db_session, user_id=user_id
+    )
 
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    await patch_db_user(db_session, user_id=user_id, user=user)
+    await users_repository.patch_db_user(db_session, user_id=user_id, user=user)
 
     return Response(status_code=204)
 
@@ -111,11 +124,15 @@ async def delete_user(
 ):
     """Delete a user"""
 
-    check_user_exists = await get_user_by_id(db_session, user_id=user_id)
+    users_repository = UsersRepository()
+
+    check_user_exists = await users_repository.get_user_by_id(
+        db_session, user_id=user_id
+    )
 
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    await delete_db_user(db_session, user_id=user_id)
+    await users_repository.delete_db_user(db_session, user_id=user_id)
 
     return Response(status_code=204)
