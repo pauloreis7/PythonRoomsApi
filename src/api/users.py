@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
-from src.infra.repositories.courses_repository import get_user_courses
+from src.infra.repositories.courses_repository import CoursesRepository
 from src.infra.repositories.users_repository import UsersRepository
 
 
@@ -57,6 +57,7 @@ async def read_user_courses(
     """Find user's course"""
 
     users_repository = UsersRepository()
+    courses_repository = CoursesRepository()
 
     check_user_exists = await users_repository.get_user_by_id(
         db_session, user_id=user_id
@@ -65,7 +66,9 @@ async def read_user_courses(
     if check_user_exists is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_courses = await get_user_courses(db_session, user_id=user_id)
+    user_courses = await courses_repository.get_user_courses(
+        db_session, user_id=user_id
+    )
 
     return JSONResponse(status_code=200, content=jsonable_encoder(user_courses))
 

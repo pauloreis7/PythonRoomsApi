@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from src.api.users import users_router
 
-# from src.api.courses import courses_router
+from src.api.courses import courses_router
 from src.api.sections import sections_router
 
 
@@ -24,5 +24,5 @@ app = FastAPI(
 
 
 app.include_router(users_router)
-# app.include_router(courses_router)
+app.include_router(courses_router)
 app.include_router(sections_router)

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
-from src.infra.repositories.courses_repository import get_course_by_id
+from src.infra.repositories.courses_repository import CoursesRepository
 from src.infra.repositories.sections_repository import (
     get_section_by_id,
     get_sections_by_title,
@@ -53,7 +53,9 @@ async def create_section(
 ):
     """Create a section"""
 
-    check_course_exists = await get_course_by_id(
+    courses_repository = CoursesRepository()
+
+    check_course_exists = await courses_repository.get_course_by_id(
         db_session, course_id=section.course_id
     )
 

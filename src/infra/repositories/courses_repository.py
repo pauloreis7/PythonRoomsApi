@@ -1,104 +1,114 @@
+from typing import List
+
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.course import Course
 from src.pydantic_schemas.course import CourseCreate, CoursePatch
+from src.data.interfaces.courses_repository import CoursesRepositoryInterface
 
 
-async def get_courses(db_session: AsyncSession, skip: int = 0, limit: int = 100):
-    """Get all courses list"""
+class CoursesRepository(CoursesRepositoryInterface):
+    """Class to courses repository"""
 
-    query = select(Course).offset(skip).limit(limit)
+    async def get_courses(
+        self, db_session: AsyncSession, skip: int = 0, limit: int = 100
+    ) -> List[Course]:
+        """Get all courses list"""
 
-    query_response = await db_session.execute(query)
+        query = select(Course).offset(skip).limit(limit)
 
-    courses = query_response.scalars().all()
+        query_response = await db_session.execute(query)
 
-    return courses
+        courses = query_response.scalars().all()
 
+        return courses
 
-async def get_course_by_id(db_session: AsyncSession, course_id: int):
-    """Get a course by id"""
+    async def get_course_by_id(
+        self, db_session: AsyncSession, course_id: int
+    ) -> Course:
+        """Get a course by id"""
 
-    query = select(Course).where(Course.id == course_id)
+        query = select(Course).where(Course.id == course_id)
 
-    query_response = await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
-    course = query_response.scalars().first()
+        course = query_response.scalars().first()
 
-    return course
+        return course
 
+    async def get_course_by_title(
+        self, db_session: AsyncSession, course_title: str
+    ) -> List[Course]:
+        """Get a course by title"""
 
-async def get_course_by_title(db_session: AsyncSession, course_title: str):
-    """Get a course by title"""
+        query = select(Course).where(Course.title == course_title)
 
-    query = select(Course).where(Course.title == course_title)
+        query_response = await db_session.execute(query)
 
-    query_response = await db_session.execute(query)
+        courses = query_response.scalars().all()
 
-    courses = query_response.scalars().all()
+        return courses
 
-    return courses
+    async def get_user_courses(
+        self, db_session: AsyncSession, user_id: int
+    ) -> List[Course]:
+        """Get a user's courses"""
 
+        query = select(Course).where(Course.user_id == user_id)
 
-async def get_user_courses(db_session: AsyncSession, user_id: int):
-    """Get a user's courses"""
+        query_response = await db_session.execute(query)
 
-    query = select(Course).where(Course.user_id == user_id)
+        courses = query_response.scalars().all()
 
-    query_response = await db_session.execute(query)
+        return courses
 
-    courses = query_response.scalars().all()
+    async def create_db_course(
+        self, db_session: AsyncSession, course: CourseCreate
+    ) -> bool:
+        """Create a course"""
 
-    return courses
-
-
-async def create_db_course(db_session: AsyncSession, course: CourseCreate):
-    """Create a course"""
-
-    query = insert(Course).values(
-        title=course.title,
-        description=course.description,
-        url=course.url,
-        user_id=course.user_id,
-    )
-
-    await db_session.execute(query)
-
-    await db_session.commit()
-
-    return True
-
-
-async def patch_db_course(
-    db_session: AsyncSession, course_id: int, course: CoursePatch
-):
-    """Patch a course"""
-
-    query = (
-        update(Course)
-        .where(Course.id == course_id)
-        .values(
+        query = insert(Course).values(
             title=course.title,
             description=course.description,
             url=course.url,
+            user_id=course.user_id,
         )
-    )
 
-    await db_session.execute(query)
+        await db_session.execute(query)
 
-    await db_session.commit()
+        await db_session.commit()
 
-    return
+        return True
 
+    async def patch_db_course(
+        self, db_session: AsyncSession, course_id: int, course: CoursePatch
+    ) -> None:
+        """Patch a course"""
 
-async def delete_db_course(db_session: AsyncSession, course_id: int):
-    """Delete a course"""
+        query = (
+            update(Course)
+            .where(Course.id == course_id)
+            .values(
+                title=course.title,
+                description=course.description,
+                url=course.url,
+            )
+        )
 
-    query = delete(Course).where(Course.id == course_id)
+        await db_session.execute(query)
 
-    await db_session.execute(query)
+        await db_session.commit()
 
-    await db_session.commit()
+        return
 
-    return
+    async def delete_db_course(self, db_session: AsyncSession, course_id: int) -> None:
+        """Delete a course"""
+
+        query = delete(Course).where(Course.id == course_id)
+
+        await db_session.execute(query)
+
+        await db_session.commit()
+
+        return
