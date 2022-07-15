@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
 from src.pydantic_schemas.sections import Section
 from src.infra.config.connection import get_db
-from src.infra.repositories.sections_repository import get_course_sections
+from src.infra.repositories.sections_repository import SectionsRepository
 from src.infra.repositories.users_repository import UsersRepository
 from src.infra.repositories.courses_repository import CoursesRepository
 
@@ -57,6 +57,7 @@ async def read_course_sections(
     """Get course's sections"""
 
     courses_repository = CoursesRepository()
+    sections_repository = SectionsRepository()
 
     check_course_exists = await courses_repository.get_course_by_id(
         db_session, course_id=course_id
@@ -65,7 +66,7 @@ async def read_course_sections(
     if check_course_exists is None:
         raise HTTPException(status_code=404, detail="Course not found")
 
-    course_sections_response = await get_course_sections(
+    course_sections_response = await sections_repository.get_course_sections(
         db_session, course_id=course_id
     )
 
