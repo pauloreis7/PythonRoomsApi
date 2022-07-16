@@ -4,11 +4,11 @@ from typing import Dict, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class UsersPaginationCollectorInterface(ABC):
-    """Read Users Colletor Usecase Interface"""
+class PaginateUsersCollectorInterface(ABC):
+    """Paginate Users Colletor Usecase Interface"""
 
     @abstractmethod
-    async def users_pagination(
+    async def paginate_users(
         self, db_session: AsyncSession, skip: int = 0, limit: int = 100
     ) -> List[Dict]:
         """Must implement"""

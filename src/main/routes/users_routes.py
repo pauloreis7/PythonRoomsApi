@@ -10,8 +10,8 @@ from src.pydantic_schemas.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
 from src.infra.repositories.courses_repository import CoursesRepository
 from src.infra.repositories.users_repository import UsersRepository
-from src.data.usecases.users_usecases.users_pagination_collector import (
-    UsersPaginationCollector,
+from src.data.usecases.users_usecases.paginate_users_collector import (
+    PaginateUsersCollector,
 )
 from src.data.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollector,
@@ -36,9 +36,9 @@ async def read_users(
     """Get all users list"""
 
     infra = UsersRepository()
-    use_case = UsersPaginationCollector(infra)
+    use_case = PaginateUsersCollector(infra)
 
-    users = await use_case.users_pagination(db_session, skip=skip, limit=limit)
+    users = await use_case.paginate_users(db_session, skip=skip, limit=limit)
 
     return JSONResponse(status_code=200, content=jsonable_encoder(users))
 
