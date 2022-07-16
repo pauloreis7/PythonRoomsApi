@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 
-from src.api.users import users_router
+from src.main.routes.users_routes import users_router
 
-from src.api.courses import courses_router
-from src.api.sections import sections_router
+from src.main.routes.courses_routes import courses_router
+from src.main.routes.sections_routes import sections_router
 
 
 # user.Base.metadata.create_all(bind=engine)
