@@ -29,7 +29,7 @@ class CoursesRepositoryInterface(ABC):
     @abstractmethod
     async def get_course_by_title(
         self, db_session: AsyncSession, course_title: str
-    ) -> List[Course]:
+    ) -> Course:
         """Must implement"""
 
         raise Exception("Must implement get_course_by_title method")

@@ -39,16 +39,16 @@ class CoursesRepository(CoursesRepositoryInterface):
 
     async def get_course_by_title(
         self, db_session: AsyncSession, course_title: str
-    ) -> List[Course]:
+    ) -> Course:
         """Get a course by title"""
 
         query = select(Course).where(Course.title == course_title)
 
         query_response = await db_session.execute(query)
 
-        courses = query_response.scalars().all()
+        course = query_response.scalars().first()
 
-        return courses
+        return course
 
     async def get_user_courses(
         self, db_session: AsyncSession, user_id: int

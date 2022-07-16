@@ -19,7 +19,7 @@ class DeleteUserCollector(DeleteUserCollectorInterface):
         """
         Delete user model
         :param  - db_session: ORM database session
-                - user_id: user id for delete
+                - user_id: User id for delete
         :returns - None for delete user event status
         """
 

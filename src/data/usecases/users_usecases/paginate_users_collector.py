@@ -9,7 +9,7 @@ from src.data.interfaces.users_repository import UsersRepositoryInterface
 
 
 class PaginateUsersCollector(PaginateUsersCollectorInterface):
-    """Users Pagination collector usecase"""
+    """Paginate Users collector usecase"""
 
     def __init__(self, users_repository: Type[UsersRepositoryInterface]) -> None:
         self.__users_repository = users_repository

@@ -19,6 +19,7 @@ class CoursePatch(BaseModel):
     title: str
     description: Optional[str] = None
     url: Optional[str] = None
+    user_id: int
 
 
 class Course(CourseBase):
