@@ -13,6 +13,12 @@ from src.infra.repositories.users_repository import UsersRepository
 from src.data.usecases.users_usecases.users_pagination_collector import (
     UsersPaginationCollector,
 )
+from src.data.usecases.users_usecases.find_user_by_id_collector import (
+    FindUserByIdCollector,
+)
+from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector
+from src.data.usecases.users_usecases.patch_user_collector import PatchUserCollector
+from src.data.usecases.users_usecases.delete_user_collector import DeleteUserCollector
 
 
 users_router = APIRouter()
@@ -41,16 +47,12 @@ async def find_user(
 ):
     """Find a user"""
 
-    users_repository = UsersRepository()
+    infra = UsersRepository()
+    use_case = FindUserByIdCollector(infra)
 
-    check_user_exists = await users_repository.get_user_by_id(
-        db_session, user_id=user_id
-    )
+    user = await use_case.find_user_by_id(db_session, user_id=user_id)
 
-    if check_user_exists is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return JSONResponse(status_code=200, content=jsonable_encoder(check_user_exists))
+    return JSONResponse(status_code=200, content=jsonable_encoder(user))
 
 
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
@@ -84,22 +86,12 @@ async def create_user(
 ):
     """Create a user"""
 
-    users_repository = UsersRepository()
+    infra = UsersRepository()
+    use_case = CreateUserCollector(infra)
 
-    check_user_exists = await users_repository.get_user_by_email(
-        db_session, user_email=user.email
-    )
+    create_user_response = await use_case.create_user(db_session, user=user)
 
-    if check_user_exists:
-        raise HTTPException(status_code=400, detail="User already exists!")
-
-    create_db_user_response = await users_repository.create_db_user(
-        db_session, user=user
-    )
-
-    return JSONResponse(
-        status_code=201, content=jsonable_encoder(create_db_user_response)
-    )
+    return JSONResponse(status_code=201, content=jsonable_encoder(create_user_response))
 
 
 @users_router.patch("/users/{user_id}", status_code=204)
@@ -110,16 +102,10 @@ async def patch_user(
 ):
     """Patch a user"""
 
-    users_repository = UsersRepository()
+    infra = UsersRepository()
+    use_case = PatchUserCollector(infra)
 
-    check_user_exists = await users_repository.get_user_by_id(
-        db_session, user_id=user_id
-    )
-
-    if check_user_exists is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    await users_repository.patch_db_user(db_session, user_id=user_id, user=user)
+    await use_case.patch_user(db_session, user_id=user_id, user=user)
 
     return Response(status_code=204)
 
@@ -131,15 +117,9 @@ async def delete_user(
 ):
     """Delete a user"""
 
-    users_repository = UsersRepository()
+    infra = UsersRepository()
+    use_case = DeleteUserCollector(infra)
 
-    check_user_exists = await users_repository.get_user_by_id(
-        db_session, user_id=user_id
-    )
-
-    if check_user_exists is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    await users_repository.delete_db_user(db_session, user_id=user_id)
+    await use_case.delete_user(db_session, user_id=user_id)
 
     return Response(status_code=204)
