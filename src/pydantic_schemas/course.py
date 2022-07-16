@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 
 class CourseBase(BaseModel):
+    """Course Base Model"""
+
     title: str
     description: Optional[str] = None
     url: Optional[str] = None
@@ -12,10 +14,12 @@ class CourseBase(BaseModel):
 
 
 class CourseCreate(CourseBase):
-    ...
+    """Create Course Model Data"""
 
 
 class CoursePatch(BaseModel):
+    """Patch Course Model Data"""
+
     title: str
     description: Optional[str] = None
     url: Optional[str] = None
@@ -23,9 +27,13 @@ class CoursePatch(BaseModel):
 
 
 class Course(CourseBase):
+    """Course Model read"""
+
     id: int
     created_at: datetime
     updated_at: datetime
 
     class Config:
+        """Orm serialized read"""
+
         orm_mode = True

@@ -23,7 +23,7 @@ class Course(Timestamp, Base):
     __tablename__ = "courses"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(200), nullable=False)
+    title = Column(String(200), unique=True, index=True, nullable=False)
     description = Column(Text, nullable=True)
     url = Column(URLType, nullable=True)
     user_id = Column(
