@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Body, Path, Query, Response, HTTPException
+from fastapi import APIRouter, Depends, Body, Path, Query, Response
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +15,9 @@ from src.data.usecases.users_usecases.users_pagination_collector import (
 )
 from src.data.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollector,
+)
+from src.data.usecases.users_usecases.find_user_courses_collector import (
+    FindUserCoursesCollector,
 )
 from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector
 from src.data.usecases.users_usecases.patch_user_collector import PatchUserCollector
@@ -62,19 +65,11 @@ async def read_user_courses(
 ):
     """Find user's course"""
 
-    users_repository = UsersRepository()
-    courses_repository = CoursesRepository()
+    users_infra = UsersRepository()
+    courses_infra = CoursesRepository()
+    use_case = FindUserCoursesCollector(users_infra, courses_infra)
 
-    check_user_exists = await users_repository.get_user_by_id(
-        db_session, user_id=user_id
-    )
-
-    if check_user_exists is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    user_courses = await courses_repository.get_user_courses(
-        db_session, user_id=user_id
-    )
+    user_courses = await use_case.find_user_courses(db_session, user_id=user_id)
 
     return JSONResponse(status_code=200, content=jsonable_encoder(user_courses))
 
