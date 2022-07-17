@@ -1,12 +1,12 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.domain.usecases.sections_usecases.delete_section_collector import (
     DeleteSectionCollectorInterface,
 )
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class DeleteSectionCollector(DeleteSectionCollectorInterface):
@@ -28,7 +28,7 @@ class DeleteSectionCollector(DeleteSectionCollectorInterface):
         )
 
         if check_section_exists is None:
-            raise HTTPException(status_code=404, detail="Course section not found")
+            raise HttpRequestError(status_code=404, detail="Course section not found")
 
         await self.__sections_repository.delete_db_section(db_session, section_id)
 

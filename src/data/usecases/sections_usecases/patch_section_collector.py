@@ -1,7 +1,6 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.pydantic_schemas.sections import SectionPatch
 from src.domain.usecases.sections_usecases.patch_section_collector import (
@@ -9,6 +8,7 @@ from src.domain.usecases.sections_usecases.patch_section_collector import (
 )
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class PatchSectionCollector(PatchSectionCollectorInterface):
@@ -37,14 +37,14 @@ class PatchSectionCollector(PatchSectionCollectorInterface):
         )
 
         if check_section_exists is None:
-            raise HTTPException(status_code=404, detail="Course section not found")
+            raise HttpRequestError(status_code=404, detail="Course section not found")
 
         check_course_exists = await self.__courses_repository.get_course_by_id(
             db_session, course_id=section.course_id
         )
 
         if check_course_exists is None:
-            raise HTTPException(status_code=404, detail="Course not found")
+            raise HttpRequestError(status_code=404, detail="Course not found")
 
         await self.__sections_repository.patch_db_section(
             db_session, section_id=section_id, section=section

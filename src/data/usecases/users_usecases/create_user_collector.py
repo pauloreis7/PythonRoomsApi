@@ -1,13 +1,13 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.pydantic_schemas.user import UserCreate
 from src.domain.usecases.users_usecases.create_user_collector import (
     CreateUserCollectorInterface,
 )
 from src.data.interfaces.users_repository import UsersRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class CreateUserCollector(CreateUserCollectorInterface):
@@ -29,7 +29,7 @@ class CreateUserCollector(CreateUserCollectorInterface):
         )
 
         if check_user_exists:
-            raise HTTPException(status_code=400, detail="User already exists!")
+            raise HttpRequestError(status_code=400, detail="User already exists!")
 
         api_response = await self.__users_repository.create_db_user(db_session, user)
 

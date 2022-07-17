@@ -1,12 +1,12 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.domain.usecases.courses_usecases.delete_course_collector import (
     DeleteCourseCollectorInterface,
 )
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class DeleteCourseCollector(DeleteCourseCollectorInterface):
@@ -28,7 +28,7 @@ class DeleteCourseCollector(DeleteCourseCollectorInterface):
         )
 
         if check_course_exists is None:
-            raise HTTPException(status_code=404, detail="Course not found")
+            raise HttpRequestError(status_code=404, detail="Course not found")
 
         await self.__courses_repository.delete_db_course(db_session, course_id)
 

@@ -1,7 +1,6 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.pydantic_schemas.sections import SectionCreate
 from src.domain.usecases.sections_usecases.create_section_collector import (
@@ -9,6 +8,7 @@ from src.domain.usecases.sections_usecases.create_section_collector import (
 )
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class CreateSectionCollector(CreateSectionCollectorInterface):
@@ -37,7 +37,7 @@ class CreateSectionCollector(CreateSectionCollectorInterface):
         )
 
         if check_course_exists is None:
-            raise HTTPException(status_code=404, detail="Course not found")
+            raise HttpRequestError(status_code=404, detail="Course not found")
 
         api_response = await self.__sections_repository.create_db_section(
             db_session, section

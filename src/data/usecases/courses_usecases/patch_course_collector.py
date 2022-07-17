@@ -1,7 +1,6 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.pydantic_schemas.course import CoursePatch
 from src.domain.usecases.courses_usecases.patch_course_collector import (
@@ -9,6 +8,7 @@ from src.domain.usecases.courses_usecases.patch_course_collector import (
 )
 from src.data.interfaces.users_repository import UsersRepositoryInterface
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class PatchCourseCollector(PatchCourseCollectorInterface):
@@ -37,7 +37,7 @@ class PatchCourseCollector(PatchCourseCollectorInterface):
         )
 
         if check_course_exists is None:
-            raise HTTPException(status_code=404, detail="Course not found")
+            raise HttpRequestError(status_code=404, detail="Course not found")
 
         check_course_name_already_exists = (
             await self.__courses_repository.get_course_by_title(
@@ -49,17 +49,17 @@ class PatchCourseCollector(PatchCourseCollectorInterface):
             check_course_name_already_exists
             and check_course_name_already_exists.id is not course_id
         ):
-            raise HTTPException(status_code=400, detail="Name already in use!")
+            raise HttpRequestError(status_code=400, detail="Name already in use!")
 
         check_user_exists = await self.__users_repository.get_user_by_id(
             db_session, user_id=course.user_id
         )
 
         if check_user_exists is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HttpRequestError(status_code=404, detail="User not found")
 
         if check_user_exists.role != 1:
-            raise HTTPException(
+            raise HttpRequestError(
                 status_code=400, detail="Only a teacher user can have a course!"
             )
 

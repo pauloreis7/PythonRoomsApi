@@ -1,12 +1,12 @@
 from typing import Type, Dict
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.domain.usecases.sections_usecases.find_section_by_id_collector import (
     FindSectionByIdCollectorInterface,
 )
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class FindSectionByIdCollector(FindSectionByIdCollectorInterface):
@@ -30,6 +30,6 @@ class FindSectionByIdCollector(FindSectionByIdCollectorInterface):
         )
 
         if api_response is None:
-            raise HTTPException(status_code=404, detail="Course section not found")
+            raise HttpRequestError(status_code=404, detail="Course section not found")
 
         return api_response

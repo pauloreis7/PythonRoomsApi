@@ -1,7 +1,6 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.pydantic_schemas.course import CourseCreate
 from src.domain.usecases.courses_usecases.create_course_collector import (
@@ -9,6 +8,7 @@ from src.domain.usecases.courses_usecases.create_course_collector import (
 )
 from src.data.interfaces.users_repository import UsersRepositoryInterface
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class CreateCourseCollector(CreateCourseCollectorInterface):
@@ -37,17 +37,17 @@ class CreateCourseCollector(CreateCourseCollectorInterface):
         )
 
         if check_course_exists:
-            raise HTTPException(status_code=400, detail="Course already exists!")
+            raise HttpRequestError(status_code=400, detail="Course already exists!")
 
         check_user_exists = await self.__users_repository.get_user_by_id(
             db_session, user_id=course.user_id
         )
 
         if check_user_exists is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HttpRequestError(status_code=404, detail="User not found")
 
         if check_user_exists.role != 1:
-            raise HTTPException(
+            raise HttpRequestError(
                 status_code=400, detail="Only a teacher user can create a course!"
             )
 

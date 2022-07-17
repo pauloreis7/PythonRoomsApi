@@ -1,13 +1,13 @@
 from typing import Type, Dict, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from src.domain.usecases.courses_usecases.find_course_sections_collector import (
     FindCourseSectionsCollectorInterface,
 )
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class FindCourseSectionsCollector(FindCourseSectionsCollectorInterface):
@@ -36,7 +36,7 @@ class FindCourseSectionsCollector(FindCourseSectionsCollectorInterface):
         )
 
         if check_course_exists is None:
-            raise HTTPException(status_code=404, detail="Course not found")
+            raise HttpRequestError(status_code=404, detail="Course not found")
 
         api_response = await self.__sections_repository.get_course_sections(
             db_session, course_id

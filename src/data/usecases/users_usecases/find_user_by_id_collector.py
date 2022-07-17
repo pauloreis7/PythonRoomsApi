@@ -1,12 +1,13 @@
 from typing import Type, Dict
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
+
 
 from src.domain.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollectorInterface,
 )
 from src.data.interfaces.users_repository import UsersRepositoryInterface
+from src.errors.http_request_error import HttpRequestError
 
 
 class FindUserByIdCollector(FindUserByIdCollectorInterface):
@@ -26,6 +27,6 @@ class FindUserByIdCollector(FindUserByIdCollectorInterface):
         api_response = await self.__users_repository.get_user_by_id(db_session, user_id)
 
         if api_response is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HttpRequestError(status_code=404, detail="User not found")
 
         return api_response
