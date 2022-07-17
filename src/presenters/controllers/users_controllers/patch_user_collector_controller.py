@@ -6,7 +6,7 @@ from src.pydantic_schemas.user import UserPatch
 from src.domain.usecases.users_usecases.patch_user_collector import (
     PatchUserCollectorInterface,
 )
-from src.domain.controllers.users_usecases.patch_user_collector_controller import (
+from src.domain.controllers.users_controllers.patch_user_collector_controller import (
     PatchUserCollectorControllerInterface,
 )
 

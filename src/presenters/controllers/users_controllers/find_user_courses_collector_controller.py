@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.usecases.users_usecases.find_user_courses_collector import (
     FindUserCoursesCollectorInterface,
 )
-from src.domain.controllers.users_usecases.find_user_courses_collector_controller import (
+from src.domain.controllers.users_controllers.find_user_courses_collector_controller import (
     FindUserCoursesCollectorControllerInterface,
 )
 

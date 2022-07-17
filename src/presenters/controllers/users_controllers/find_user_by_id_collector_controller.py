@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollectorInterface,
 )
-from src.domain.controllers.users_usecases.find_user_by_id_collector_controller import (
+from src.domain.controllers.users_controllers.find_user_by_id_collector_controller import (
     FindUserByIdCollectorControllerInterface,
 )
 

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.usecases.users_usecases.delete_user_collector import (
     DeleteUserCollectorInterface,
 )
-from src.domain.controllers.users_usecases.delete_user_collector_controller import (
+from src.domain.controllers.users_controllers.delete_user_collector_controller import (
     DeleteUserCollectorControllerInterface,
 )
 

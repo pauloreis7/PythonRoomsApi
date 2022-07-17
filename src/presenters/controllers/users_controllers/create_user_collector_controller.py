@@ -6,7 +6,7 @@ from src.pydantic_schemas.user import UserCreate
 from src.domain.usecases.users_usecases.create_user_collector import (
     CreateUserCollectorInterface,
 )
-from src.domain.controllers.users_usecases.create_user_collector_controller import (
+from src.domain.controllers.users_controllers.create_user_collector_controller import (
     CreateUserCollectorControllerInterface,
 )
 

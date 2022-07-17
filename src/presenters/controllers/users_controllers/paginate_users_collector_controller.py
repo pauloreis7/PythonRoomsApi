@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.domain.usecases.users_usecases.paginate_users_collector import (
     PaginateUsersCollectorInterface,
 )
-from src.domain.controllers.users_usecases.paginate_users_collector_controller import (
+from src.domain.controllers.users_controllers.paginate_users_collector_controller import (
     PaginateUsersCollectorControllerInterface,
 )
 
