@@ -22,6 +22,24 @@ from src.data.usecases.users_usecases.find_user_courses_collector import (
 from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector
 from src.data.usecases.users_usecases.patch_user_collector import PatchUserCollector
 from src.data.usecases.users_usecases.delete_user_collector import DeleteUserCollector
+from src.presenters.controllers.users_controllers.paginate_users_collector_controller import (
+    PaginateUsersCollectorController,
+)
+from src.presenters.controllers.users_controllers.find_user_by_id_collector_controller import (
+    FindUserByIdCollectorController,
+)
+from src.presenters.controllers.users_controllers.find_user_courses_collector_controller import (
+    FindUserCoursesCollectorController,
+)
+from src.presenters.controllers.users_controllers.create_user_collector_controller import (
+    CreateUserCollectorController,
+)
+from src.presenters.controllers.users_controllers.patch_user_collector_controller import (
+    PatchUserCollectorController,
+)
+from src.presenters.controllers.users_controllers.delete_user_collector_controller import (
+    DeleteUserCollectorController,
+)
 
 
 users_router = APIRouter()
@@ -37,10 +55,13 @@ async def read_users(
 
     infra = UsersRepository()
     use_case = PaginateUsersCollector(infra)
+    controller = PaginateUsersCollectorController(use_case)
 
-    users = await use_case.paginate_users(db_session, skip=skip, limit=limit)
+    response = await controller.handle(db_session=db_session, skip=skip, limit=limit)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(users))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @users_router.get("/users/{user_id}", response_model=User)
@@ -52,10 +73,13 @@ async def find_user(
 
     infra = UsersRepository()
     use_case = FindUserByIdCollector(infra)
+    controller = FindUserByIdCollectorController(use_case)
 
-    user = await use_case.find_user_by_id(db_session, user_id=user_id)
+    response = await controller.handle(db_session=db_session, user_id=user_id)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(user))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @users_router.get("/users/{user_id}/courses", response_model=List[Course])
@@ -68,10 +92,13 @@ async def read_user_courses(
     users_infra = UsersRepository()
     courses_infra = CoursesRepository()
     use_case = FindUserCoursesCollector(users_infra, courses_infra)
+    controller = FindUserCoursesCollectorController(use_case)
 
-    user_courses = await use_case.find_user_courses(db_session, user_id=user_id)
+    response = await controller.handle(db_session=db_session, user_id=user_id)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(user_courses))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @users_router.post("/users", response_model=bool, status_code=201)
@@ -83,10 +110,13 @@ async def create_user(
 
     infra = UsersRepository()
     use_case = CreateUserCollector(infra)
+    controller = CreateUserCollectorController(use_case)
 
-    create_user_response = await use_case.create_user(db_session, user=user)
+    response = await controller.handle(db_session=db_session, user=user)
 
-    return JSONResponse(status_code=201, content=jsonable_encoder(create_user_response))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @users_router.patch("/users/{user_id}", status_code=204)
@@ -99,10 +129,13 @@ async def patch_user(
 
     infra = UsersRepository()
     use_case = PatchUserCollector(infra)
+    controller = PatchUserCollectorController(use_case)
 
-    await use_case.patch_user(db_session, user_id=user_id, user=user)
+    response = await controller.handle(
+        db_session=db_session, user_id=user_id, user=user
+    )
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
 
 
 @users_router.delete("/users/{user_id}", status_code=204)
@@ -114,7 +147,8 @@ async def delete_user(
 
     infra = UsersRepository()
     use_case = DeleteUserCollector(infra)
+    controller = DeleteUserCollectorController(use_case)
 
-    await use_case.delete_user(db_session, user_id=user_id)
+    response = await controller.handle(db_session=db_session, user_id=user_id)
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
