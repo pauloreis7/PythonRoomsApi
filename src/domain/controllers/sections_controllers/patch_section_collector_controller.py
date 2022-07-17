@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.sections import SectionPatch
 
 
-class PatchSectionCollectorInterface(ABC):
-    """Patch Section Collector Usecase Interface"""
+class PatchSectionCollectorControllerInterface(ABC):
+    """Patch Section Collector Controller Interface"""
 
     @abstractmethod
-    async def patch_section(
+    async def handle(
         self, db_session: AsyncSession, section_id: int, section: SectionPatch
-    ) -> None:
-        """Must implement"""
+    ):
+        """Method to handle request"""
 
-        raise Exception("Must implement patch_section method")
+        raise Exception("Must implement handler method")
