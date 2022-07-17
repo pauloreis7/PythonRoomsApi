@@ -22,22 +22,22 @@ from src.data.usecases.users_usecases.find_user_courses_collector import (
 from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector
 from src.data.usecases.users_usecases.patch_user_collector import PatchUserCollector
 from src.data.usecases.users_usecases.delete_user_collector import DeleteUserCollector
-from src.presenters.controllers.users_controllers.paginate_users_collector_controller import (
+from src.presenters.controllers import (
     PaginateUsersCollectorController,
 )
-from src.presenters.controllers.users_controllers.find_user_by_id_collector_controller import (
+from src.presenters.controllers import (
     FindUserByIdCollectorController,
 )
-from src.presenters.controllers.users_controllers.find_user_courses_collector_controller import (
+from src.presenters.controllers import (
     FindUserCoursesCollectorController,
 )
-from src.presenters.controllers.users_controllers.create_user_collector_controller import (
+from src.presenters.controllers import (
     CreateUserCollectorController,
 )
-from src.presenters.controllers.users_controllers.patch_user_collector_controller import (
+from src.presenters.controllers import (
     PatchUserCollectorController,
 )
-from src.presenters.controllers.users_controllers.delete_user_collector_controller import (
+from src.presenters.controllers import (
     DeleteUserCollectorController,
 )
 

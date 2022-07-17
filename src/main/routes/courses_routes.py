@@ -29,6 +29,25 @@ from src.data.usecases.courses_usecases.patch_course_collector import (
 from src.data.usecases.courses_usecases.delete_course_collector import (
     DeleteCourseCollector,
 )
+from src.presenters.controllers import (
+    CreateCourseCollectorController,
+)
+from src.presenters.controllers import (
+    FindCourseByIdCollectorController,
+)
+from src.presenters.controllers import (
+    FindCourseSectionsCollectorController,
+)
+from src.presenters.controllers import (
+    PaginateCoursesCollectorController,
+)
+from src.presenters.controllers import (
+    DeleteCourseCollectorController,
+)
+from src.presenters.controllers import (
+    PatchCourseCollectorController,
+)
+
 
 courses_router = APIRouter()
 
@@ -43,10 +62,13 @@ async def read_courses(
 
     infra = CoursesRepository()
     use_case = PaginateCoursesCollector(infra)
+    controller = PaginateCoursesCollectorController(use_case)
 
-    courses = await use_case.paginate_courses(db_session, skip=skip, limit=limit)
+    response = await controller.handle(db_session=db_session, skip=skip, limit=limit)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(courses))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @courses_router.get("/courses/{course_id}", response_model=Course)
@@ -58,10 +80,13 @@ async def find_course(
 
     infra = CoursesRepository()
     use_case = FindCourseByIdCollector(infra)
+    controller = FindCourseByIdCollectorController(use_case)
 
-    course = await use_case.find_course_by_id(db_session, course_id=course_id)
+    response = await controller.handle(db_session=db_session, course_id=course_id)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(course))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @courses_router.get("/courses/sections/{course_id}", response_model=List[Section])
@@ -74,12 +99,13 @@ async def read_course_sections(
     courses_infra = CoursesRepository()
     sections_infra = SectionsRepository()
     use_case = FindCourseSectionsCollector(courses_infra, sections_infra)
+    controller = FindCourseSectionsCollectorController(use_case)
 
-    course_sections = await use_case.find_course_sections(
-        db_session, course_id=course_id
+    response = await controller.handle(db_session=db_session, course_id=course_id)
+
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
     )
-
-    return JSONResponse(status_code=200, content=jsonable_encoder(course_sections))
 
 
 @courses_router.post("/courses", response_model=bool, status_code=201)
@@ -92,11 +118,12 @@ async def create_course(
     courses_infra = CoursesRepository()
     users_infra = UsersRepository()
     use_case = CreateCourseCollector(courses_infra, users_infra)
+    controller = CreateCourseCollectorController(use_case)
 
-    create_course_response = await use_case.create_course(db_session, course=course)
+    response = await controller.handle(db_session=db_session, course=course)
 
     return JSONResponse(
-        status_code=201, content=jsonable_encoder(create_course_response)
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
     )
 
 
@@ -111,10 +138,13 @@ async def patch_course(
     courses_infra = CoursesRepository()
     users_infra = UsersRepository()
     use_case = PatchCourseCollector(courses_infra, users_infra)
+    controller = PatchCourseCollectorController(use_case)
 
-    await use_case.patch_course(db_session, course_id=course_id, course=course)
+    response = await controller.handle(
+        db_session=db_session, course_id=course_id, course=course
+    )
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
 
 
 @courses_router.delete("/courses/{course_id}", status_code=204)
@@ -126,7 +156,8 @@ async def delete_course(
 
     infra = CoursesRepository()
     use_case = DeleteCourseCollector(infra)
+    controller = DeleteCourseCollectorController(use_case)
 
-    await use_case.delete_course(db_session, course_id=course_id)
+    response = await controller.handle(db_session=db_session, course_id=course_id)
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
