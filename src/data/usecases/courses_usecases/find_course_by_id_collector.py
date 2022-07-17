@@ -20,7 +20,7 @@ class FindCourseByIdCollector(FindCourseByIdCollectorInterface):
         Find course by id and return it
         :param  - db_session: ORM database session
                 - course_id: Course id to find
-        :returns - Dictionary with user information
+        :returns - Dictionary with course information
         """
 
         api_response = await self.__courses_repository.get_course_by_id(

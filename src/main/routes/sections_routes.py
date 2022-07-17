@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Body, Path, Query, Response, HTTPException
+from fastapi import APIRouter, Depends, Body, Path, Query, Response
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,6 +9,21 @@ from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
 from src.infra.repositories.courses_repository import CoursesRepository
 from src.infra.repositories.sections_repository import SectionsRepository
+from src.data.usecases.sections_usecases.find_section_by_id_collector import (
+    FindSectionByIdCollector,
+)
+from src.data.usecases.sections_usecases.find_sections_by_title_collector import (
+    FindSectionsByTitleCollector,
+)
+from src.data.usecases.sections_usecases.create_section_collector import (
+    CreateSectionCollector,
+)
+from src.data.usecases.sections_usecases.patch_section_collector import (
+    PatchSectionCollector,
+)
+from src.data.usecases.sections_usecases.delete_section_collector import (
+    DeleteSectionCollector,
+)
 
 sections_router = APIRouter()
 
@@ -20,16 +35,12 @@ async def find_section(
 ):
     """Get a section"""
 
-    sections_repository = SectionsRepository()
+    infra = SectionsRepository()
+    use_case = FindSectionByIdCollector(infra)
 
-    check_session_exists = await sections_repository.get_section_by_id(
-        db_session, section_id=section_id
-    )
+    section = await use_case.find_section_by_id(db_session, section_id=section_id)
 
-    if check_session_exists is None:
-        raise HTTPException(status_code=404, detail="Course section not found")
-
-    return JSONResponse(status_code=200, content=jsonable_encoder(check_session_exists))
+    return JSONResponse(status_code=200, content=jsonable_encoder(section))
 
 
 @sections_router.get("/sections", response_model=List[Section])
@@ -39,9 +50,10 @@ async def read_section_by_title(
 ):
     """Get all sections by title"""
 
-    sections_repository = SectionsRepository()
+    infra = SectionsRepository()
+    use_case = FindSectionsByTitleCollector(infra)
 
-    sections = await sections_repository.get_sections_by_title(
+    sections = await use_case.find_sections_by_title(
         db_session, sections_title=sections_title
     )
 
@@ -55,22 +67,14 @@ async def create_section(
 ):
     """Create a section"""
 
-    sections_repository = SectionsRepository()
-    courses_repository = CoursesRepository()
+    sections_infra = SectionsRepository()
+    courses_infra = CoursesRepository()
+    use_case = CreateSectionCollector(sections_infra, courses_infra)
 
-    check_course_exists = await courses_repository.get_course_by_id(
-        db_session, course_id=section.course_id
-    )
-
-    if check_course_exists is None:
-        raise HTTPException(status_code=404, detail="Course not found")
-
-    create_db_section_response = await sections_repository.create_db_section(
-        db_session, section=section
-    )
+    create_section_response = await use_case.create_section(db_session, section=section)
 
     return JSONResponse(
-        status_code=201, content=jsonable_encoder(create_db_section_response)
+        status_code=201, content=jsonable_encoder(create_section_response)
     )
 
 
@@ -83,18 +87,11 @@ async def patch_section(
 
     """Patch a section"""
 
-    sections_repository = SectionsRepository()
+    sections_infra = SectionsRepository()
+    courses_infra = CoursesRepository()
+    use_case = PatchSectionCollector(sections_infra, courses_infra)
 
-    check_section_exists = await sections_repository.get_section_by_id(
-        db_session, section_id=section_id
-    )
-
-    if check_section_exists is None:
-        raise HTTPException(status_code=404, detail="Course section not found")
-
-    await sections_repository.patch_db_section(
-        db_session, section_id=section_id, section=section
-    )
+    await use_case.patch_section(db_session, section_id=section_id, section=section)
 
     return Response(status_code=204)
 
@@ -106,15 +103,9 @@ async def delete_section(
 ):
     """Delete a section"""
 
-    sections_repository = SectionsRepository()
+    infra = SectionsRepository()
+    use_case = DeleteSectionCollector(infra)
 
-    check_section_exists = await sections_repository.get_section_by_id(
-        db_session, section_id=section_id
-    )
-
-    if check_section_exists is None:
-        raise HTTPException(status_code=404, detail="Course section not found")
-
-    await sections_repository.delete_db_section(db_session, section_id=section_id)
+    await use_case.delete_section(db_session, section_id=section_id)
 
     return Response(status_code=204)

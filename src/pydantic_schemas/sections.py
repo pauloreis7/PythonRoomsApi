@@ -35,6 +35,7 @@ class SectionPatch(BaseModel):
     description: Optional[str] = None
     content_type: int
     grade_media: Optional[int] = 0
+    course_id: int
 
     @validator("content_type")
     @classmethod
