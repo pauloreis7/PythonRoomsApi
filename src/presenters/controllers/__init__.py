@@ -34,3 +34,18 @@ from .courses_controllers.delete_course_collector_controller import (
 from .courses_controllers.patch_course_collector_controller import (
     PatchCourseCollectorController,
 )
+from .sections_controllers.create_section_collector_controller import (
+    CreateSectionCollectorController,
+)
+from .sections_controllers.delete_section_collector_controller import (
+    DeleteSectionCollectorController,
+)
+from .sections_controllers.find_section_by_id_collector_controller import (
+    FindSectionByIdCollectorController,
+)
+from .sections_controllers.find_sections_by_title_collector_controller import (
+    FindSectionsByTitleCollectorController,
+)
+from .sections_controllers.patch_section_collector_controller import (
+    PatchSectionCollectorController,
+)

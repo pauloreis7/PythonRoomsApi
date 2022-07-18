@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
 from src.infra.repositories.courses_repository import CoursesRepository
@@ -24,6 +25,11 @@ from src.data.usecases.sections_usecases.patch_section_collector import (
 from src.data.usecases.sections_usecases.delete_section_collector import (
     DeleteSectionCollector,
 )
+from src.presenters.controllers import FindSectionByIdCollectorController
+from src.presenters.controllers import FindSectionsByTitleCollectorController
+from src.presenters.controllers import CreateSectionCollectorController
+from src.presenters.controllers import PatchSectionCollectorController
+from src.presenters.controllers import DeleteSectionCollectorController
 
 sections_router = APIRouter()
 
@@ -37,10 +43,13 @@ async def find_section(
 
     infra = SectionsRepository()
     use_case = FindSectionByIdCollector(infra)
+    controller = FindSectionByIdCollectorController(use_case)
 
-    section = await use_case.find_section_by_id(db_session, section_id=section_id)
+    response = await controller.handle(db_session=db_session, section_id=section_id)
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(section))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @sections_router.get("/sections", response_model=List[Section])
@@ -52,12 +61,15 @@ async def read_section_by_title(
 
     infra = SectionsRepository()
     use_case = FindSectionsByTitleCollector(infra)
+    controller = FindSectionsByTitleCollectorController(use_case)
 
-    sections = await use_case.find_sections_by_title(
-        db_session, sections_title=sections_title
+    response = await controller.handle(
+        db_session=db_session, sections_title=sections_title
     )
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(sections))
+    return JSONResponse(
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
+    )
 
 
 @sections_router.post("/sections", response_model=bool, status_code=201)
@@ -70,11 +82,12 @@ async def create_section(
     sections_infra = SectionsRepository()
     courses_infra = CoursesRepository()
     use_case = CreateSectionCollector(sections_infra, courses_infra)
+    controller = CreateSectionCollectorController(use_case)
 
-    create_section_response = await use_case.create_section(db_session, section=section)
+    response = await controller.handle(db_session=db_session, section=section)
 
     return JSONResponse(
-        status_code=201, content=jsonable_encoder(create_section_response)
+        status_code=response["status_code"], content=jsonable_encoder(response["data"])
     )
 
 
@@ -90,10 +103,13 @@ async def patch_section(
     sections_infra = SectionsRepository()
     courses_infra = CoursesRepository()
     use_case = PatchSectionCollector(sections_infra, courses_infra)
+    controller = PatchSectionCollectorController(use_case)
 
-    await use_case.patch_section(db_session, section_id=section_id, section=section)
+    response = await controller.handle(
+        db_session=db_session, section_id=section_id, section=section
+    )
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
 
 
 @sections_router.delete("/sections/{section_id}", status_code=204)
@@ -105,7 +121,8 @@ async def delete_section(
 
     infra = SectionsRepository()
     use_case = DeleteSectionCollector(infra)
+    controller = DeleteSectionCollectorController(use_case)
 
-    await use_case.delete_section(db_session, section_id=section_id)
+    response = await controller.handle(db_session=db_session, section_id=section_id)
 
-    return Response(status_code=204)
+    return Response(status_code=response["status_code"])
