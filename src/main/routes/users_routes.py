@@ -8,18 +8,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
-from src.main.composers.users_usecases.paginate_users_composer import (
+from src.main.composers.users_composers.paginate_users_composer import (
     paginate_users_composer,
 )
-from src.main.composers.users_usecases.find_user_by_id_composer import (
+from src.main.composers.users_composers.find_user_by_id_composer import (
     find_user_by_id_composer,
 )
-from src.main.composers.users_usecases.find_user_courses_composer import (
+from src.main.composers.users_composers.find_user_courses_composer import (
     find_user_courses_composer,
 )
-from src.main.composers.users_usecases.create_user_composer import create_user_composer
-from src.main.composers.users_usecases.patch_user_composer import patch_user_composer
-from src.main.composers.users_usecases.delete_user_composer import delete_user_composer
+from src.main.composers.users_composers.create_user_composer import create_user_composer
+from src.main.composers.users_composers.patch_user_composer import patch_user_composer
+from src.main.composers.users_composers.delete_user_composer import delete_user_composer
 
 users_router = APIRouter()
 

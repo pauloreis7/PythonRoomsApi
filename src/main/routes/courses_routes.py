@@ -8,46 +8,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
 from src.pydantic_schemas.sections import Section
 from src.infra.config.connection import get_db
-from src.infra.repositories.sections_repository import SectionsRepository
-from src.infra.repositories.users_repository import UsersRepository
-from src.infra.repositories.courses_repository import CoursesRepository
-from src.data.usecases.courses_usecases.paginate_courses_collector import (
-    PaginateCoursesCollector,
+from src.main.composers.courses_composers.paginate_courses_composer import (
+    paginate_courses_composer,
 )
-from src.data.usecases.courses_usecases.find_course_by_id_collector import (
-    FindCourseByIdCollector,
+from src.main.composers.courses_composers.find_course_by_id_composer import (
+    find_course_by_id_composer,
 )
-from src.data.usecases.courses_usecases.find_course_sections_collector import (
-    FindCourseSectionsCollector,
+from src.main.composers.courses_composers.find_course_sections_composer import (
+    find_course_sections_composer,
 )
-from src.data.usecases.courses_usecases.create_course_collector import (
-    CreateCourseCollector,
+from src.main.composers.courses_composers.create_course_composer import (
+    create_course_composer,
 )
-from src.data.usecases.courses_usecases.patch_course_collector import (
-    PatchCourseCollector,
+from src.main.composers.courses_composers.patch_course_composer import (
+    patch_course_composer,
 )
-from src.data.usecases.courses_usecases.delete_course_collector import (
-    DeleteCourseCollector,
+from src.main.composers.courses_composers.delete_course_composer import (
+    delete_course_composer,
 )
-from src.presenters.controllers import (
-    CreateCourseCollectorController,
-)
-from src.presenters.controllers import (
-    FindCourseByIdCollectorController,
-)
-from src.presenters.controllers import (
-    FindCourseSectionsCollectorController,
-)
-from src.presenters.controllers import (
-    PaginateCoursesCollectorController,
-)
-from src.presenters.controllers import (
-    DeleteCourseCollectorController,
-)
-from src.presenters.controllers import (
-    PatchCourseCollectorController,
-)
-
 
 courses_router = APIRouter()
 
@@ -60,11 +38,11 @@ async def read_courses(
 ):
     """Get all courses list"""
 
-    infra = CoursesRepository()
-    use_case = PaginateCoursesCollector(infra)
-    controller = PaginateCoursesCollectorController(use_case)
+    paginate_courses_controller = paginate_courses_composer()
 
-    response = await controller.handle(db_session=db_session, skip=skip, limit=limit)
+    response = await paginate_courses_controller.handle(
+        db_session=db_session, skip=skip, limit=limit
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -78,11 +56,11 @@ async def find_course(
 ):
     """Get a course"""
 
-    infra = CoursesRepository()
-    use_case = FindCourseByIdCollector(infra)
-    controller = FindCourseByIdCollectorController(use_case)
+    find_course_by_id_controller = find_course_by_id_composer()
 
-    response = await controller.handle(db_session=db_session, course_id=course_id)
+    response = await find_course_by_id_controller.handle(
+        db_session=db_session, course_id=course_id
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -96,12 +74,11 @@ async def read_course_sections(
 ):
     """Get course's sections"""
 
-    courses_infra = CoursesRepository()
-    sections_infra = SectionsRepository()
-    use_case = FindCourseSectionsCollector(courses_infra, sections_infra)
-    controller = FindCourseSectionsCollectorController(use_case)
+    find_course_sections_controller = find_course_sections_composer()
 
-    response = await controller.handle(db_session=db_session, course_id=course_id)
+    response = await find_course_sections_controller.handle(
+        db_session=db_session, course_id=course_id
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -115,12 +92,11 @@ async def create_course(
 ):
     """Create a course"""
 
-    courses_infra = CoursesRepository()
-    users_infra = UsersRepository()
-    use_case = CreateCourseCollector(courses_infra, users_infra)
-    controller = CreateCourseCollectorController(use_case)
+    create_course_controller = create_course_composer()
 
-    response = await controller.handle(db_session=db_session, course=course)
+    response = await create_course_controller.handle(
+        db_session=db_session, course=course
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -135,12 +111,9 @@ async def patch_course(
 ):
     """Patch a course"""
 
-    courses_infra = CoursesRepository()
-    users_infra = UsersRepository()
-    use_case = PatchCourseCollector(courses_infra, users_infra)
-    controller = PatchCourseCollectorController(use_case)
+    patch_course_controller = patch_course_composer()
 
-    response = await controller.handle(
+    response = await patch_course_controller.handle(
         db_session=db_session, course_id=course_id, course=course
     )
 
@@ -154,10 +127,10 @@ async def delete_course(
 ):
     """Delete a course"""
 
-    infra = CoursesRepository()
-    use_case = DeleteCourseCollector(infra)
-    controller = DeleteCourseCollectorController(use_case)
+    delete_course_controller = delete_course_composer()
 
-    response = await controller.handle(db_session=db_session, course_id=course_id)
+    response = await delete_course_controller.handle(
+        db_session=db_session, course_id=course_id
+    )
 
     return Response(status_code=response["status_code"])
