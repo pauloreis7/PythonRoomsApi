@@ -8,39 +8,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
-from src.infra.repositories.courses_repository import CoursesRepository
-from src.infra.repositories.users_repository import UsersRepository
-from src.data.usecases.users_usecases.paginate_users_collector import (
-    PaginateUsersCollector,
+from src.main.composers.users_usecases.paginate_users_composer import (
+    paginate_users_composer,
 )
-from src.data.usecases.users_usecases.find_user_by_id_collector import (
-    FindUserByIdCollector,
+from src.main.composers.users_usecases.find_user_by_id_composer import (
+    find_user_by_id_composer,
 )
-from src.data.usecases.users_usecases.find_user_courses_collector import (
-    FindUserCoursesCollector,
+from src.main.composers.users_usecases.find_user_courses_composer import (
+    find_user_courses_composer,
 )
-from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector
-from src.data.usecases.users_usecases.patch_user_collector import PatchUserCollector
-from src.data.usecases.users_usecases.delete_user_collector import DeleteUserCollector
-from src.presenters.controllers import (
-    PaginateUsersCollectorController,
-)
-from src.presenters.controllers import (
-    FindUserByIdCollectorController,
-)
-from src.presenters.controllers import (
-    FindUserCoursesCollectorController,
-)
-from src.presenters.controllers import (
-    CreateUserCollectorController,
-)
-from src.presenters.controllers import (
-    PatchUserCollectorController,
-)
-from src.presenters.controllers import (
-    DeleteUserCollectorController,
-)
-
+from src.main.composers.users_usecases.create_user_composer import create_user_composer
+from src.main.composers.users_usecases.patch_user_composer import patch_user_composer
+from src.main.composers.users_usecases.delete_user_composer import delete_user_composer
 
 users_router = APIRouter()
 
@@ -53,11 +32,11 @@ async def read_users(
 ):
     """Get all users list"""
 
-    infra = UsersRepository()
-    use_case = PaginateUsersCollector(infra)
-    controller = PaginateUsersCollectorController(use_case)
+    paginate_users_controller = paginate_users_composer()
 
-    response = await controller.handle(db_session=db_session, skip=skip, limit=limit)
+    response = await paginate_users_controller.handle(
+        db_session=db_session, skip=skip, limit=limit
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -71,11 +50,11 @@ async def find_user(
 ):
     """Find a user"""
 
-    infra = UsersRepository()
-    use_case = FindUserByIdCollector(infra)
-    controller = FindUserByIdCollectorController(use_case)
+    find_user_by_id_controller = find_user_by_id_composer()
 
-    response = await controller.handle(db_session=db_session, user_id=user_id)
+    response = await find_user_by_id_controller.handle(
+        db_session=db_session, user_id=user_id
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -89,12 +68,11 @@ async def read_user_courses(
 ):
     """Find user's course"""
 
-    users_infra = UsersRepository()
-    courses_infra = CoursesRepository()
-    use_case = FindUserCoursesCollector(users_infra, courses_infra)
-    controller = FindUserCoursesCollectorController(use_case)
+    find_user_courses_controller = find_user_courses_composer()
 
-    response = await controller.handle(db_session=db_session, user_id=user_id)
+    response = await find_user_courses_controller.handle(
+        db_session=db_session, user_id=user_id
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -108,11 +86,9 @@ async def create_user(
 ):
     """Create a user"""
 
-    infra = UsersRepository()
-    use_case = CreateUserCollector(infra)
-    controller = CreateUserCollectorController(use_case)
+    create_user_controller = create_user_composer()
 
-    response = await controller.handle(db_session=db_session, user=user)
+    response = await create_user_controller.handle(db_session=db_session, user=user)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -127,11 +103,9 @@ async def patch_user(
 ):
     """Patch a user"""
 
-    infra = UsersRepository()
-    use_case = PatchUserCollector(infra)
-    controller = PatchUserCollectorController(use_case)
+    patch_user_controller = patch_user_composer()
 
-    response = await controller.handle(
+    response = await patch_user_controller.handle(
         db_session=db_session, user_id=user_id, user=user
     )
 
@@ -145,10 +119,10 @@ async def delete_user(
 ):
     """Delete a user"""
 
-    infra = UsersRepository()
-    use_case = DeleteUserCollector(infra)
-    controller = DeleteUserCollectorController(use_case)
+    delete_user_controller = delete_user_composer()
 
-    response = await controller.handle(db_session=db_session, user_id=user_id)
+    response = await delete_user_controller.handle(
+        db_session=db_session, user_id=user_id
+    )
 
     return Response(status_code=response["status_code"])
