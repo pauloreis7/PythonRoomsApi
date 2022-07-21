@@ -8,28 +8,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
-from src.infra.repositories.courses_repository import CoursesRepository
-from src.infra.repositories.sections_repository import SectionsRepository
-from src.data.usecases.sections_usecases.find_section_by_id_collector import (
-    FindSectionByIdCollector,
+from src.main.composers.sections_composers.find_section_by_id_composer import (
+    find_section_by_id_composer,
 )
-from src.data.usecases.sections_usecases.find_sections_by_title_collector import (
-    FindSectionsByTitleCollector,
+from src.main.composers.sections_composers.find_sections_by_title_composer import (
+    find_sections_by_title_composer,
 )
-from src.data.usecases.sections_usecases.create_section_collector import (
-    CreateSectionCollector,
+from src.main.composers.sections_composers.create_section_composer import (
+    create_section_composer,
 )
-from src.data.usecases.sections_usecases.patch_section_collector import (
-    PatchSectionCollector,
+from src.main.composers.sections_composers.patch_section_composer import (
+    patch_section_composer,
 )
-from src.data.usecases.sections_usecases.delete_section_collector import (
-    DeleteSectionCollector,
+from src.main.composers.sections_composers.delete_section_composer import (
+    delete_section_composer,
 )
-from src.presenters.controllers import FindSectionByIdCollectorController
-from src.presenters.controllers import FindSectionsByTitleCollectorController
-from src.presenters.controllers import CreateSectionCollectorController
-from src.presenters.controllers import PatchSectionCollectorController
-from src.presenters.controllers import DeleteSectionCollectorController
+
 
 sections_router = APIRouter()
 
@@ -41,11 +35,11 @@ async def find_section(
 ):
     """Get a section"""
 
-    infra = SectionsRepository()
-    use_case = FindSectionByIdCollector(infra)
-    controller = FindSectionByIdCollectorController(use_case)
+    find_section_by_id_controller = find_section_by_id_composer()
 
-    response = await controller.handle(db_session=db_session, section_id=section_id)
+    response = await find_section_by_id_controller.handle(
+        db_session=db_session, section_id=section_id
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -59,11 +53,9 @@ async def read_section_by_title(
 ):
     """Get all sections by title"""
 
-    infra = SectionsRepository()
-    use_case = FindSectionsByTitleCollector(infra)
-    controller = FindSectionsByTitleCollectorController(use_case)
+    find_sections_by_title_controller = find_sections_by_title_composer()
 
-    response = await controller.handle(
+    response = await find_sections_by_title_controller.handle(
         db_session=db_session, sections_title=sections_title
     )
 
@@ -79,12 +71,11 @@ async def create_section(
 ):
     """Create a section"""
 
-    sections_infra = SectionsRepository()
-    courses_infra = CoursesRepository()
-    use_case = CreateSectionCollector(sections_infra, courses_infra)
-    controller = CreateSectionCollectorController(use_case)
+    create_section_controller = create_section_composer()
 
-    response = await controller.handle(db_session=db_session, section=section)
+    response = await create_section_controller.handle(
+        db_session=db_session, section=section
+    )
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -100,12 +91,9 @@ async def patch_section(
 
     """Patch a section"""
 
-    sections_infra = SectionsRepository()
-    courses_infra = CoursesRepository()
-    use_case = PatchSectionCollector(sections_infra, courses_infra)
-    controller = PatchSectionCollectorController(use_case)
+    patch_section_controller = patch_section_composer()
 
-    response = await controller.handle(
+    response = await patch_section_controller.handle(
         db_session=db_session, section_id=section_id, section=section
     )
 
@@ -119,10 +107,10 @@ async def delete_section(
 ):
     """Delete a section"""
 
-    infra = SectionsRepository()
-    use_case = DeleteSectionCollector(infra)
-    controller = DeleteSectionCollectorController(use_case)
+    delete_section_controller = delete_section_composer()
 
-    response = await controller.handle(db_session=db_session, section_id=section_id)
+    response = await delete_section_controller.handle(
+        db_session=db_session, section_id=section_id
+    )
 
     return Response(status_code=response["status_code"])
