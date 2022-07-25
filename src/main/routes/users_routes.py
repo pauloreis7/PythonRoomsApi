@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course
 from src.pydantic_schemas.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
+from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.users_composers.paginate_users_composer import (
     paginate_users_composer,
 )
@@ -32,11 +33,15 @@ async def read_users(
 ):
     """Get all users list"""
 
+    response = None
     paginate_users_controller = paginate_users_composer()
 
-    response = await paginate_users_controller.handle(
-        db_session=db_session, skip=skip, limit=limit
-    )
+    try:
+        response = await paginate_users_controller.handle(
+            db_session=db_session, skip=skip, limit=limit
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -50,11 +55,15 @@ async def find_user(
 ):
     """Find a user"""
 
+    response = None
     find_user_by_id_controller = find_user_by_id_composer()
 
-    response = await find_user_by_id_controller.handle(
-        db_session=db_session, user_id=user_id
-    )
+    try:
+        response = await find_user_by_id_controller.handle(
+            db_session=db_session, user_id=user_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -68,11 +77,15 @@ async def read_user_courses(
 ):
     """Find user's course"""
 
+    response = None
     find_user_courses_controller = find_user_courses_composer()
 
-    response = await find_user_courses_controller.handle(
-        db_session=db_session, user_id=user_id
-    )
+    try:
+        response = await find_user_courses_controller.handle(
+            db_session=db_session, user_id=user_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -86,9 +99,13 @@ async def create_user(
 ):
     """Create a user"""
 
+    response = None
     create_user_controller = create_user_composer()
 
-    response = await create_user_controller.handle(db_session=db_session, user=user)
+    try:
+        response = await create_user_controller.handle(db_session=db_session, user=user)
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -103,11 +120,15 @@ async def patch_user(
 ):
     """Patch a user"""
 
+    response = None
     patch_user_controller = patch_user_composer()
 
-    response = await patch_user_controller.handle(
-        db_session=db_session, user_id=user_id, user=user
-    )
+    try:
+        response = await patch_user_controller.handle(
+            db_session=db_session, user_id=user_id, user=user
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
 
@@ -119,10 +140,14 @@ async def delete_user(
 ):
     """Delete a user"""
 
+    response = None
     delete_user_controller = delete_user_composer()
 
-    response = await delete_user_controller.handle(
-        db_session=db_session, user_id=user_id
-    )
+    try:
+        response = await delete_user_controller.handle(
+            db_session=db_session, user_id=user_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
