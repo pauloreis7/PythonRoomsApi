@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
 from src.pydantic_schemas.sections import Section
 from src.infra.config.connection import get_db
+from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.courses_composers.paginate_courses_composer import (
     paginate_courses_composer,
 )
@@ -38,11 +39,15 @@ async def read_courses(
 ):
     """Get all courses list"""
 
+    response = None
     paginate_courses_controller = paginate_courses_composer()
 
-    response = await paginate_courses_controller.handle(
-        db_session=db_session, skip=skip, limit=limit
-    )
+    try:
+        response = await paginate_courses_controller.handle(
+            db_session=db_session, skip=skip, limit=limit
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -56,11 +61,15 @@ async def find_course(
 ):
     """Get a course"""
 
+    response = None
     find_course_by_id_controller = find_course_by_id_composer()
 
-    response = await find_course_by_id_controller.handle(
-        db_session=db_session, course_id=course_id
-    )
+    try:
+        response = await find_course_by_id_controller.handle(
+            db_session=db_session, course_id=course_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -74,11 +83,15 @@ async def read_course_sections(
 ):
     """Get course's sections"""
 
+    response = None
     find_course_sections_controller = find_course_sections_composer()
 
-    response = await find_course_sections_controller.handle(
-        db_session=db_session, course_id=course_id
-    )
+    try:
+        response = await find_course_sections_controller.handle(
+            db_session=db_session, course_id=course_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -92,11 +105,15 @@ async def create_course(
 ):
     """Create a course"""
 
+    response = None
     create_course_controller = create_course_composer()
 
-    response = await create_course_controller.handle(
-        db_session=db_session, course=course
-    )
+    try:
+        response = await create_course_controller.handle(
+            db_session=db_session, course=course
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -111,11 +128,15 @@ async def patch_course(
 ):
     """Patch a course"""
 
+    response = None
     patch_course_controller = patch_course_composer()
 
-    response = await patch_course_controller.handle(
-        db_session=db_session, course_id=course_id, course=course
-    )
+    try:
+        response = await patch_course_controller.handle(
+            db_session=db_session, course_id=course_id, course=course
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
 
@@ -127,10 +148,14 @@ async def delete_course(
 ):
     """Delete a course"""
 
+    response = None
     delete_course_controller = delete_course_composer()
 
-    response = await delete_course_controller.handle(
-        db_session=db_session, course_id=course_id
-    )
+    try:
+        response = await delete_course_controller.handle(
+            db_session=db_session, course_id=course_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
