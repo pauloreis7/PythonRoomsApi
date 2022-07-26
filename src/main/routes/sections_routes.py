@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
+from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.sections_composers.find_section_by_id_composer import (
     find_section_by_id_composer,
 )
@@ -35,11 +36,15 @@ async def find_section(
 ):
     """Get a section"""
 
+    response = None
     find_section_by_id_controller = find_section_by_id_composer()
 
-    response = await find_section_by_id_controller.handle(
-        db_session=db_session, section_id=section_id
-    )
+    try:
+        response = await find_section_by_id_controller.handle(
+            db_session=db_session, section_id=section_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -53,11 +58,15 @@ async def read_section_by_title(
 ):
     """Get all sections by title"""
 
+    response = None
     find_sections_by_title_controller = find_sections_by_title_composer()
 
-    response = await find_sections_by_title_controller.handle(
-        db_session=db_session, sections_title=sections_title
-    )
+    try:
+        response = await find_sections_by_title_controller.handle(
+            db_session=db_session, sections_title=sections_title
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -71,11 +80,15 @@ async def create_section(
 ):
     """Create a section"""
 
+    response = None
     create_section_controller = create_section_composer()
 
-    response = await create_section_controller.handle(
-        db_session=db_session, section=section
-    )
+    try:
+        response = await create_section_controller.handle(
+            db_session=db_session, section=section
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return JSONResponse(
         status_code=response["status_code"], content=jsonable_encoder(response["data"])
@@ -91,11 +104,15 @@ async def patch_section(
 
     """Patch a section"""
 
+    response = None
     patch_section_controller = patch_section_composer()
 
-    response = await patch_section_controller.handle(
-        db_session=db_session, section_id=section_id, section=section
-    )
+    try:
+        response = await patch_section_controller.handle(
+            db_session=db_session, section_id=section_id, section=section
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
 
@@ -107,10 +124,14 @@ async def delete_section(
 ):
     """Delete a section"""
 
+    response = None
     delete_section_controller = delete_section_composer()
 
-    response = await delete_section_controller.handle(
-        db_session=db_session, section_id=section_id
-    )
+    try:
+        response = await delete_section_controller.handle(
+            db_session=db_session, section_id=section_id
+        )
+    except Exception as error:
+        response = handle_errors(error)
 
     return Response(status_code=response["status_code"])
