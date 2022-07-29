@@ -1,5 +1,6 @@
 from typing import List
 from faker import Faker
+from httpx import AsyncClient
 
 from src.pydantic_schemas.sections import SectionCreate, SectionPatch
 
@@ -58,7 +59,7 @@ class SectionsRepositorySpy:
         self.patch_db_section_attributes = {}
         self.delete_db_section_attributes = {}
 
-    async def get_section_by_id(self, section_id: int) -> dict:
+    async def get_section_by_id(self, _: AsyncClient, section_id: int) -> dict:
         """Get a section by id test"""
 
         self.get_section_by_id_attributes["section_id"] = section_id
@@ -74,7 +75,9 @@ class SectionsRepositorySpy:
 
         return check_section_exists
 
-    async def get_sections_by_title(self, sections_title: str) -> List[dict]:
+    async def get_sections_by_title(
+        self, _: AsyncClient, sections_title: str
+    ) -> List[dict]:
         """Get sections by title test"""
 
         self.get_sections_by_title_attributes["sections_title"] = sections_title
@@ -90,7 +93,7 @@ class SectionsRepositorySpy:
 
         return check_section_exists
 
-    async def get_course_sections(self, course_id: str) -> List[dict]:
+    async def get_course_sections(self, _: AsyncClient, course_id: str) -> List[dict]:
         """Get a course's sections test"""
 
         self.get_course_sections_attributes["course_id"] = course_id
@@ -106,7 +109,7 @@ class SectionsRepositorySpy:
 
         return courses_sections
 
-    async def create_db_section(self, section: SectionCreate) -> bool:
+    async def create_db_section(self, _: AsyncClient, section: SectionCreate) -> bool:
         """Create a section test"""
 
         self.create_db_section_attributes["title"] = section.title
@@ -117,7 +120,9 @@ class SectionsRepositorySpy:
 
         return True
 
-    async def patch_db_section(self, section_id: int, section: SectionPatch) -> None:
+    async def patch_db_section(
+        self, _: AsyncClient, section_id: int, section: SectionPatch
+    ) -> None:
         """Patch a section test"""
 
         self.patch_db_section_attributes["section_id"] = section_id
@@ -136,7 +141,7 @@ class SectionsRepositorySpy:
 
         return
 
-    async def delete_db_section(self, section_id: int) -> None:
+    async def delete_db_section(self, _: AsyncClient, section_id: int) -> None:
         """Delete a section test"""
 
         self.delete_db_section_attributes["section_id"] = section_id

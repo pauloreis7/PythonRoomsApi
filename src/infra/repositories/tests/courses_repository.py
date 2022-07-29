@@ -1,5 +1,6 @@
 from typing import List
 from faker import Faker
+from httpx import AsyncClient
 
 from src.pydantic_schemas.course import CourseCreate, CoursePatch
 
@@ -56,7 +57,9 @@ class CoursesRepositorySpy:
         self.patch_db_course_attributes = {}
         self.delete_db_course_attributes = {}
 
-    async def get_courses(self, skip: int = 0, limit: int = 100) -> List[dict]:
+    async def get_courses(
+        self, _: AsyncClient, skip: int = 0, limit: int = 100
+    ) -> List[dict]:
         """Get all courses list test"""
 
         self.get_courses_attributes["skip"] = skip
@@ -64,7 +67,7 @@ class CoursesRepositorySpy:
 
         return mock_courses()
 
-    async def get_course_by_id(self, course_id: int) -> dict:
+    async def get_course_by_id(self, _: AsyncClient, course_id: int) -> dict:
         """Get a course by id test"""
 
         self.get_course_by_id_attributes["course_id"] = course_id
@@ -80,7 +83,7 @@ class CoursesRepositorySpy:
 
         return check_course_exists
 
-    async def get_course_by_title(self, course_title: str) -> dict:
+    async def get_course_by_title(self, _: AsyncClient, course_title: str) -> dict:
         """Get a course by title test"""
 
         self.get_course_by_title_attributes["course_title"] = course_title
@@ -96,7 +99,7 @@ class CoursesRepositorySpy:
 
         return check_course_exists
 
-    async def get_user_courses(self, user_id: int) -> List[dict]:
+    async def get_user_courses(self, _: AsyncClient, user_id: int) -> List[dict]:
         """Get a user's courses test"""
 
         self.get_user_courses_attributes["user_id"] = user_id
@@ -112,7 +115,7 @@ class CoursesRepositorySpy:
 
         return users_courses
 
-    async def create_db_course(self, course: CourseCreate) -> bool:
+    async def create_db_course(self, _: AsyncClient, course: CourseCreate) -> bool:
         """Create a course test"""
 
         self.create_db_course_attributes["title"] = course.title
@@ -122,7 +125,9 @@ class CoursesRepositorySpy:
 
         return True
 
-    async def patch_db_course(self, course_id: int, course: CoursePatch) -> None:
+    async def patch_db_course(
+        self, _: AsyncClient, course_id: int, course: CoursePatch
+    ) -> None:
         """Patch a course test"""
 
         self.patch_db_course_attributes["course_id"] = course_id
@@ -140,7 +145,7 @@ class CoursesRepositorySpy:
 
         return
 
-    async def delete_db_course(self, course_id: int) -> None:
+    async def delete_db_course(self, _: AsyncClient, course_id: int) -> None:
         """Delete a course test"""
 
         self.delete_db_course_attributes["course_id"] = course_id

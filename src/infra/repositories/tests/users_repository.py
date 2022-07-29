@@ -1,5 +1,6 @@
 from typing import List
 from faker import Faker
+from httpx import AsyncClient
 
 from src.pydantic_schemas.user import UserCreate, UserPatch
 
@@ -17,7 +18,7 @@ def mock_users():
             "id": 1,
             "first_name": fake.name(),
             "bio": fake.text(),
-            "is_active": fake.unique.boolean(),
+            "is_active": fake.boolean(),
             "email": "test01@email.com",
             "last_name": fake.name(),
             "role": 1,
@@ -28,7 +29,7 @@ def mock_users():
             "id": 2,
             "first_name": fake.name(),
             "bio": fake.text(),
-            "is_active": fake.unique.boolean(),
+            "is_active": fake.boolean(),
             "email": "test02@email.com",
             "last_name": fake.name(),
             "role": 1,
@@ -39,7 +40,7 @@ def mock_users():
             "id": 3,
             "first_name": fake.name(),
             "bio": fake.text(),
-            "is_active": fake.unique.boolean(),
+            "is_active": fake.boolean(),
             "email": "test03@email.com",
             "last_name": fake.name(),
             "role": 2,
@@ -60,7 +61,9 @@ class UsersRepositorySpy:
         self.patch_db_user_attributes = {}
         self.delete_db_user_attributes = {}
 
-    def get_users(self, skip: int = 0, limit: int = 100) -> List[dict]:
+    async def get_users(
+        self, _: AsyncClient, skip: int = 0, limit: int = 100
+    ) -> List[dict]:
         """Get all users list test"""
 
         self.get_users_attributes["skip"] = skip
@@ -68,7 +71,7 @@ class UsersRepositorySpy:
 
         return mock_users()
 
-    async def get_user_by_id(self, user_id: int) -> dict:
+    async def get_user_by_id(self, _: AsyncClient, user_id: int) -> dict:
         """Get a user by id test"""
 
         self.get_user_by_id_attributes["user_id"] = user_id
@@ -84,7 +87,7 @@ class UsersRepositorySpy:
 
         return check_user_exists
 
-    async def get_user_by_email(self, user_email: str) -> dict:
+    async def get_user_by_email(self, _: AsyncClient, user_email: str) -> dict:
         """Get a user by email test"""
 
         self.get_user_by_email_attributes["user_email"] = user_email
@@ -100,7 +103,7 @@ class UsersRepositorySpy:
 
         return check_user_exists
 
-    async def create_db_user(self, user: UserCreate) -> bool:
+    async def create_db_user(self, _: AsyncClient, user: UserCreate) -> bool:
         """Create a user test"""
 
         self.create_db_user_attributes["email"] = user.email
@@ -112,7 +115,9 @@ class UsersRepositorySpy:
 
         return True
 
-    async def patch_db_user(self, user_id: int, user: UserPatch) -> None:
+    async def patch_db_user(
+        self, _: AsyncClient, user_id: int, user: UserPatch
+    ) -> None:
         """Patch a user test"""
 
         self.patch_db_user_attributes["user_id"] = user_id
@@ -131,7 +136,7 @@ class UsersRepositorySpy:
 
         return
 
-    async def delete_db_user(self, user_id: int) -> None:
+    async def delete_db_user(self, _: AsyncClient, user_id: int) -> None:
         """Delete a user test"""
 
         self.delete_db_user_attributes["user_id"] = user_id
