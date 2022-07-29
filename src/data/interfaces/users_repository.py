@@ -33,7 +33,7 @@ class UsersRepositoryInterface(ABC):
         raise Exception("Must implement get_user_by_email method")
 
     @abstractmethod
-    async def create_db_user(self, db_session: AsyncSession, user: UserCreate) -> bool:
+    async def create_db_user(self, db_session: AsyncSession, user: UserCreate) -> User:
         """Must implement"""
 
         raise Exception("Must implement create_db_user method")
@@ -41,7 +41,7 @@ class UsersRepositoryInterface(ABC):
     @abstractmethod
     async def patch_db_user(
         self, db_session: AsyncSession, user_id: int, user: UserPatch
-    ) -> None:
+    ) -> User:
         """Must implement"""
 
         raise Exception("Must implement patch_db_user method")

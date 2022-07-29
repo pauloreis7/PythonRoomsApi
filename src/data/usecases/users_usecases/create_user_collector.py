@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.user import UserCreate
+from src.pydantic_schemas.user import UserCreate, User
 from src.domain.usecases.users_usecases.create_user_collector import (
     CreateUserCollectorInterface,
 )
@@ -16,7 +16,7 @@ class CreateUserCollector(CreateUserCollectorInterface):
     def __init__(self, users_repository: Type[UsersRepositoryInterface]) -> None:
         self.__users_repository = users_repository
 
-    async def create_user(self, db_session: AsyncSession, user: UserCreate) -> bool:
+    async def create_user(self, db_session: AsyncSession, user: UserCreate) -> User:
         """
         Create user model
         :param  - db_session: ORM database session

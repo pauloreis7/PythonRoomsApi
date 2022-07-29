@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select, insert, update, delete
+from sqlalchemy import literal_column, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.user import User
@@ -48,27 +48,33 @@ class UsersRepository(UsersRepositoryInterface):
 
         return user
 
-    async def create_db_user(self, db_session: AsyncSession, user: UserCreate) -> bool:
+    async def create_db_user(self, db_session: AsyncSession, user: UserCreate) -> User:
         """Create a user"""
 
-        query = insert(User).values(
-            email=user.email,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            bio=user.bio,
-            role=user.role,
-            is_active=user.is_active,
+        query = (
+            insert(User)
+            .values(
+                email=user.email,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                bio=user.bio,
+                role=user.role,
+                is_active=user.is_active,
+            )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return True
+        created_user = query_response.fetchone()
+
+        return created_user
 
     async def patch_db_user(
         self, db_session: AsyncSession, user_id: int, user: UserPatch
-    ) -> None:
+    ) -> User:
         """Patch a user"""
 
         query = (
@@ -81,13 +87,16 @@ class UsersRepository(UsersRepositoryInterface):
                 last_name=user.last_name,
                 bio=user.bio,
             )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return
+        patched_user = query_response.fetchone()
+
+        return patched_user
 
     async def delete_db_user(self, db_session: AsyncSession, user_id: int) -> None:
         """Delete a user"""

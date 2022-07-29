@@ -22,10 +22,8 @@ class CreateUserCollectorController(CreateUserCollectorControllerInterface):
     async def handle(self, db_session: AsyncSession, user: UserCreate):
         """Handle to create user controller"""
 
-        user_create_status = await self.__use_case.create_user(
-            db_session=db_session, user=user
-        )
+        await self.__use_case.create_user(db_session=db_session, user=user)
 
-        response = {"status_code": 201, "data": user_create_status}
+        response = {"status_code": 201, "data": True}
 
         return response

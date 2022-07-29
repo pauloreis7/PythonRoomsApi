@@ -3,57 +3,16 @@ from faker import Faker
 from httpx import AsyncClient
 
 from src.pydantic_schemas.user import UserCreate, UserPatch
+from src.data.interfaces.users_repository import UsersRepositoryInterface
 
 fake = Faker()
 
 
-def mock_users():
-    """
-    mock data for users
-    :return - list with users dict
-    """
-
-    return [
-        {
-            "id": 1,
-            "first_name": fake.name(),
-            "bio": fake.text(),
-            "is_active": fake.boolean(),
-            "email": "test01@email.com",
-            "last_name": fake.name(),
-            "role": 1,
-            "created_at": fake.date_time(),
-            "updated_at": fake.date_time(),
-        },
-        {
-            "id": 2,
-            "first_name": fake.name(),
-            "bio": fake.text(),
-            "is_active": fake.boolean(),
-            "email": "test02@email.com",
-            "last_name": fake.name(),
-            "role": 1,
-            "created_at": fake.date_time(),
-            "updated_at": fake.date_time(),
-        },
-        {
-            "id": 3,
-            "first_name": fake.name(),
-            "bio": fake.text(),
-            "is_active": fake.boolean(),
-            "email": "test03@email.com",
-            "last_name": fake.name(),
-            "role": 2,
-            "created_at": fake.date_time(),
-            "updated_at": fake.date_time(),
-        },
-    ]
-
-
-class UsersRepositorySpy:
+class UsersRepositorySpy(UsersRepositoryInterface):
     """Spy to users repository"""
 
     def __init__(self) -> None:
+        self.users = []
         self.get_users_attributes = {}
         self.get_user_by_id_attributes = {}
         self.get_user_by_email_attributes = {}
@@ -69,18 +28,18 @@ class UsersRepositorySpy:
         self.get_users_attributes["skip"] = skip
         self.get_users_attributes["limit"] = limit
 
-        return mock_users()
+        users = self.users
+
+        return users
 
     async def get_user_by_id(self, _: AsyncClient, user_id: int) -> dict:
         """Get a user by id test"""
 
         self.get_user_by_id_attributes["user_id"] = user_id
 
-        users = mock_users()
-
         check_user_exists = None
 
-        for user in users:
+        for user in self.users:
             if user["id"] == user_id:
                 check_user_exists = user
                 break
@@ -92,18 +51,16 @@ class UsersRepositorySpy:
 
         self.get_user_by_email_attributes["user_email"] = user_email
 
-        users = mock_users()
-
         check_user_exists = None
 
-        for user in users:
+        for user in self.users:
             if user["email"] == user_email:
                 check_user_exists = user
                 break
 
         return check_user_exists
 
-    async def create_db_user(self, _: AsyncClient, user: UserCreate) -> bool:
+    async def create_db_user(self, _: AsyncClient, user: UserCreate) -> dict:
         """Create a user test"""
 
         self.create_db_user_attributes["email"] = user.email
@@ -113,11 +70,25 @@ class UsersRepositorySpy:
         self.create_db_user_attributes["bio"] = user.bio
         self.create_db_user_attributes["is_active"] = user.is_active
 
-        return True
+        fake_user = {
+            "id": fake.random_int(),
+            "email": user.email,
+            "role": user.role,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "bio": user.bio,
+            "is_active": user.is_active,
+            "created_at": fake.date_time(),
+            "updated_at": fake.date_time(),
+        }
+
+        self.users.append(fake_user)
+
+        return fake_user
 
     async def patch_db_user(
         self, _: AsyncClient, user_id: int, user: UserPatch
-    ) -> None:
+    ) -> dict:
         """Patch a user test"""
 
         self.patch_db_user_attributes["user_id"] = user_id
@@ -127,25 +98,33 @@ class UsersRepositorySpy:
         self.patch_db_user_attributes["last_name"] = user.last_name
         self.patch_db_user_attributes["bio"] = user.bio
 
-        users_mock = mock_users()
+        fake_user = {
+            "id": fake.random_int(),
+            "email": user.email,
+            "role": user.role,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "bio": user.bio,
+            "is_active": user.is_active,
+            "created_at": fake.date_time(),
+            "updated_at": fake.date_time(),
+        }
 
-        for user_mock in users_mock:
-            if user_mock["id"] == user_id:
-                user_mock = user
+        for user in self.users:
+            if user["id"] == user_id:
+                user = fake_user
                 break
 
-        return
+        return fake_user
 
     async def delete_db_user(self, _: AsyncClient, user_id: int) -> None:
         """Delete a user test"""
 
         self.delete_db_user_attributes["user_id"] = user_id
 
-        users = mock_users()
-
-        for index, _ in enumerate(users):
-            if users[index]["id"] == user_id:
-                del users[index]
+        for index, _ in enumerate(self.users):
+            if self.users[index]["id"] == user_id:
+                del self.users[index]
                 break
 
         return
