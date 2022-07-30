@@ -37,7 +37,7 @@ class SectionsRepositoryInterface(ABC):
     @abstractmethod
     async def create_db_section(
         self, db_session: AsyncSession, section: SectionCreate
-    ) -> bool:
+    ) -> Section:
         """Must implement"""
 
         raise Exception("Must implement create_db_section method")
@@ -45,7 +45,7 @@ class SectionsRepositoryInterface(ABC):
     @abstractmethod
     async def patch_db_section(
         self, db_session: AsyncSession, section_id: int, section: SectionPatch
-    ) -> None:
+    ) -> Section:
         """Must implement"""
 
         raise Exception("Must implement patch_db_section method")

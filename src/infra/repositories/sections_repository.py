@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select, insert, update, delete
+from sqlalchemy import literal_column, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.course import Section
@@ -52,26 +52,32 @@ class SectionsRepository(SectionsRepositoryInterface):
 
     async def create_db_section(
         self, db_session: AsyncSession, section: SectionCreate
-    ) -> bool:
+    ) -> Section:
         """Create a section"""
 
-        query = insert(Section).values(
-            title=section.title,
-            description=section.description,
-            content_type=section.content_type,
-            grade_media=section.grade_media,
-            course_id=section.course_id,
+        query = (
+            insert(Section)
+            .values(
+                title=section.title,
+                description=section.description,
+                content_type=section.content_type,
+                grade_media=section.grade_media,
+                course_id=section.course_id,
+            )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return True
+        created_section = query_response.fetchone()
+
+        return created_section
 
     async def patch_db_section(
         self, db_session: AsyncSession, section_id: int, section: SectionPatch
-    ) -> None:
+    ) -> Section:
         """Patch a section"""
 
         query = (
@@ -83,13 +89,16 @@ class SectionsRepository(SectionsRepositoryInterface):
                 content_type=section.content_type,
                 grade_media=section.grade_media,
             )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return
+        patched_section = query_response.fetchone()
+
+        return patched_section
 
     async def delete_db_section(
         self, db_session: AsyncSession, section_id: int
