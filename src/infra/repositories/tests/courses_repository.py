@@ -71,7 +71,6 @@ class CoursesRepositorySpy(CoursesRepositoryInterface):
         for course in self.courses:
             if course.user_id == user_id:
                 users_courses.append(course)
-                break
 
         return users_courses
 

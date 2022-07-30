@@ -1,7 +1,8 @@
-from typing import Type, Dict, List
+from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.course import Course
 from src.domain.usecases.users_usecases.find_user_courses_collector import (
     FindUserCoursesCollectorInterface,
 )
@@ -23,7 +24,7 @@ class FindUserCoursesCollector(FindUserCoursesCollectorInterface):
 
     async def find_user_courses(
         self, db_session: AsyncSession, user_id: int
-    ) -> List[Dict]:
+    ) -> List[Course]:
         """
         Find user courses by id and return courses list
         :param  - db_session: ORM database session

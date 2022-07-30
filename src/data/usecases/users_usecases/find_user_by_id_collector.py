@@ -1,8 +1,9 @@
-from typing import Type, Dict
+from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
+from src.pydantic_schemas.user import User
 from src.domain.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollectorInterface,
 )
@@ -16,7 +17,7 @@ class FindUserByIdCollector(FindUserByIdCollectorInterface):
     def __init__(self, users_repository: Type[UsersRepositoryInterface]) -> None:
         self.__users_repository = users_repository
 
-    async def find_user_by_id(self, db_session: AsyncSession, user_id: int) -> Dict:
+    async def find_user_by_id(self, db_session: AsyncSession, user_id: int) -> User:
         """
         Find user by id and return it
         :param  - db_session: ORM database session

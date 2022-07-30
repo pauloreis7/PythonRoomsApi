@@ -1,7 +1,8 @@
-from typing import Type, List, Dict
+from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.user import User
 from src.domain.usecases.users_usecases.paginate_users_collector import (
     PaginateUsersCollectorInterface,
 )
@@ -16,7 +17,7 @@ class PaginateUsersCollector(PaginateUsersCollectorInterface):
 
     async def paginate_users(
         self, db_session: AsyncSession, skip: int = 0, limit: int = 100
-    ) -> List[Dict]:
+    ) -> List[User]:
         """
         Read users and return pagination
         :param  - db_session: ORM database session
