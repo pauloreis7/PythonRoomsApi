@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select, insert, update, delete
+from sqlalchemy import literal_column, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.course import Course
@@ -65,25 +65,31 @@ class CoursesRepository(CoursesRepositoryInterface):
 
     async def create_db_course(
         self, db_session: AsyncSession, course: CourseCreate
-    ) -> bool:
+    ) -> Course:
         """Create a course"""
 
-        query = insert(Course).values(
-            title=course.title,
-            description=course.description,
-            url=course.url,
-            user_id=course.user_id,
+        query = (
+            insert(Course)
+            .values(
+                title=course.title,
+                description=course.description,
+                url=course.url,
+                user_id=course.user_id,
+            )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return True
+        created_course = query_response.fetchone()
+
+        return created_course
 
     async def patch_db_course(
         self, db_session: AsyncSession, course_id: int, course: CoursePatch
-    ) -> None:
+    ) -> Course:
         """Patch a course"""
 
         query = (
@@ -94,13 +100,16 @@ class CoursesRepository(CoursesRepositoryInterface):
                 description=course.description,
                 url=course.url,
             )
+            .returning(literal_column("*"))
         )
 
-        await db_session.execute(query)
+        query_response = await db_session.execute(query)
 
         await db_session.commit()
 
-        return
+        patched_course = query_response.fetchone()
+
+        return patched_course
 
     async def delete_db_course(self, db_session: AsyncSession, course_id: int) -> None:
         """Delete a course"""

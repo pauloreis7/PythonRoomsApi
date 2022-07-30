@@ -45,7 +45,7 @@ class CoursesRepositoryInterface(ABC):
     @abstractmethod
     async def create_db_course(
         self, db_session: AsyncSession, course: CourseCreate
-    ) -> bool:
+    ) -> Course:
         """Must implement"""
 
         raise Exception("Must implement create_db_course method")
@@ -53,7 +53,7 @@ class CoursesRepositoryInterface(ABC):
     @abstractmethod
     async def patch_db_course(
         self, db_session: AsyncSession, course_id: int, course: CoursePatch
-    ) -> None:
+    ) -> Course:
         """Must implement"""
 
         raise Exception("Must implement patch_db_course method")
