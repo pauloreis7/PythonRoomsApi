@@ -22,10 +22,8 @@ class CreateCourseCollectorController(CreateCourseCollectorControllerInterface):
     async def handle(self, db_session: AsyncSession, course: CourseCreate):
         """Handle to create course controller"""
 
-        course_create_status = await self.__use_case.create_course(
-            db_session=db_session, course=course
-        )
+        await self.__use_case.create_course(db_session=db_session, course=course)
 
-        response = {"status_code": 201, "data": course_create_status}
+        response = {"status_code": 201, "data": True}
 
         return response

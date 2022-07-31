@@ -7,6 +7,7 @@ Create Date: 2022-07-09 11:38:00.424453
 """
 from alembic import op
 import sqlalchemy as sa
+import sqlalchemy_utils
 
 from src.infra.migrations.data.users import users_seed
 
@@ -25,7 +26,7 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("email", sa.String(length=100), nullable=False),
+        sa.Column("email", sqlalchemy_utils.types.email.EmailType(), nullable=False),
         sa.Column("first_name", sa.String(length=50), nullable=False),
         sa.Column("last_name", sa.String(length=50), nullable=False),
         sa.Column("bio", sa.Text(), nullable=True),

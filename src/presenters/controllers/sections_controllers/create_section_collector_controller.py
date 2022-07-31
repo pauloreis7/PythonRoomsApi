@@ -22,10 +22,8 @@ class CreateSectionCollectorController(CreateSectionCollectorControllerInterface
     async def handle(self, db_session: AsyncSession, section: SectionCreate):
         """Handle to create course section controller"""
 
-        section_create_status = await self.__use_case.create_section(
-            db_session=db_session, section=section
-        )
+        await self.__use_case.create_section(db_session=db_session, section=section)
 
-        response = {"status_code": 201, "data": section_create_status}
+        response = {"status_code": 201, "data": True}
 
         return response

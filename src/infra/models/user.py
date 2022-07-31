@@ -2,6 +2,7 @@ import enum
 
 from sqlalchemy import Boolean, Column, Integer, String, Enum, Text
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import EmailType
 
 from src.infra.config.base import Base
 from .mixins import Timestamp
@@ -20,7 +21,7 @@ class User(Timestamp, Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(100), unique=True, index=True, nullable=False)
+    email = Column(EmailType, unique=True, index=True, nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     bio = Column(Text, nullable=True)
