@@ -1,6 +1,7 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from email_validator import validate_email, EmailNotValidError
 
 from src.domain.models.user import UserCreate, User
 from src.domain.usecases.users_usecases.create_user_collector import (
@@ -30,6 +31,13 @@ class CreateUserCollector(CreateUserCollectorInterface):
 
         if check_user_exists:
             raise HttpRequestError(status_code=400, detail="User already exists!")
+
+        try:
+            validate_email(user.email).email
+        except EmailNotValidError as error:
+            raise HttpRequestError(
+                status_code=422, detail="The email address is not valid!"
+            ) from error
 
         api_response = await self.__users_repository.create_db_user(db_session, user)
 

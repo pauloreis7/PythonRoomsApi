@@ -1,6 +1,7 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from email_validator import validate_email, EmailNotValidError
 
 from src.domain.models.user import UserPatch
 from src.domain.usecases.users_usecases.patch_user_collector import (
@@ -44,6 +45,13 @@ class PatchUserCollector(PatchUserCollectorInterface):
             and check_user_email_already_exists.id is not user_id
         ):
             raise HttpRequestError(status_code=400, detail="Email already in use!")
+
+        try:
+            validate_email(user.email).email
+        except EmailNotValidError as error:
+            raise HttpRequestError(
+                status_code=422, detail="The email address is not valid!"
+            ) from error
 
         await self.__users_repository.patch_db_user(db_session, user_id, user)
 
