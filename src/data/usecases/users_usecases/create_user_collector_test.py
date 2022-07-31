@@ -59,3 +59,26 @@ async def test_create_user_already_exists_error():
 
         assert error.detail is not None
         assert error.status_code == 400
+
+
+@mark.asyncio
+async def test_create_user_invalid_email_error():
+    """Testing invalid email error in create_user method"""
+
+    session = MagicMock()
+
+    users_repository = UsersRepositorySpy()
+    create_user_collector = CreateUserCollector(users_repository)
+
+    fake_user = create_fake_user()
+
+    fake_user.email = "invalid_email"
+
+    try:
+        await create_user_collector.create_user(db_session=session, user=fake_user)
+
+        assert True is False
+    except HttpRequestError as error:
+
+        assert error.detail is not None
+        assert error.status_code == 422

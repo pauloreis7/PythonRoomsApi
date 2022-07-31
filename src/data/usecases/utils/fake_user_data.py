@@ -9,7 +9,7 @@ def create_fake_user():
     """Util to create a fake user"""
 
     user = UserCreate(
-        email=fake.email(),
+        email="johndoe@test.com",
         role=1,
         first_name=fake.name(),
         last_name=fake.name(),
@@ -24,7 +24,7 @@ def patch_fake_user():
     """Util to patch a fake user"""
 
     user = UserPatch(
-        email=fake.email(),
+        email="johndoepatch@test.com",
         role=1,
         first_name=fake.name(),
         last_name=fake.name(),

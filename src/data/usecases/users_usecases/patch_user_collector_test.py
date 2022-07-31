@@ -106,6 +106,8 @@ async def test_patch_user_email_already_exists_error():
         db_session=session, user=create_first_fake_user_data
     )
 
+    create_second_fake_user_data.email = "johndoe2@test.com"
+
     second_created_user = await create_user_collector.create_user(
         db_session=session, user=create_second_fake_user_data
     )
@@ -124,3 +126,36 @@ async def test_patch_user_email_already_exists_error():
 
         assert error.detail is not None
         assert error.status_code == 400
+
+
+@mark.asyncio
+async def test_patch_user_invalid_email_error():
+    """Testing invalid email error in patch_user method"""
+
+    session = MagicMock()
+
+    users_repository = UsersRepositorySpy()
+    create_user_collector = CreateUserCollector(users_repository)
+    patch_user_collector = PatchUserCollector(users_repository)
+
+    create_fake_user_data = create_fake_user()
+    patch_fake_user_data = patch_fake_user()
+
+    created_user = await create_user_collector.create_user(
+        db_session=session, user=create_fake_user_data
+    )
+
+    patch_fake_user_data.email = "invalid_email"
+
+    try:
+        await patch_user_collector.patch_user(
+            db_session=session,
+            user_id=created_user.id,
+            user=patch_fake_user_data,
+        )
+
+        assert True is False
+    except HttpRequestError as error:
+
+        assert error.detail is not None
+        assert error.status_code == 422
