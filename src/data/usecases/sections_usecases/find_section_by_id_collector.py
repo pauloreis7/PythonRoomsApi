@@ -1,7 +1,8 @@
-from typing import Type, Dict
+from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.sections import Section
 from src.domain.usecases.sections_usecases.find_section_by_id_collector import (
     FindSectionByIdCollectorInterface,
 )
@@ -17,7 +18,7 @@ class FindSectionByIdCollector(FindSectionByIdCollectorInterface):
 
     async def find_section_by_id(
         self, db_session: AsyncSession, section_id: int
-    ) -> Dict:
+    ) -> Section:
         """
         Find section by id and return it
         :param  - db_session: ORM database session

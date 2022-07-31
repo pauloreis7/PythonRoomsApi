@@ -1,7 +1,8 @@
-from typing import Type, List, Dict
+from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.sections import Section
 from src.domain.usecases.sections_usecases.find_sections_by_title_collector import (
     FindSectionsByTitleCollectorInterface,
 )
@@ -16,7 +17,7 @@ class FindSectionsByTitleCollector(FindSectionsByTitleCollectorInterface):
 
     async def find_sections_by_title(
         self, db_session: AsyncSession, sections_title: str
-    ) -> List[Dict]:
+    ) -> List[Section]:
         """
         Find sections by title and return it
         :param  - db_session: ORM database session

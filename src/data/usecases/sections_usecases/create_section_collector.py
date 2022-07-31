@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.sections import SectionCreate
+from src.pydantic_schemas.sections import Section, SectionCreate
 from src.domain.usecases.sections_usecases.create_section_collector import (
     CreateSectionCollectorInterface,
 )
@@ -24,7 +24,7 @@ class CreateSectionCollector(CreateSectionCollectorInterface):
 
     async def create_section(
         self, db_session: AsyncSession, section: SectionCreate
-    ) -> bool:
+    ) -> Section:
         """
         Create section model
         :param  - db_session: ORM database session

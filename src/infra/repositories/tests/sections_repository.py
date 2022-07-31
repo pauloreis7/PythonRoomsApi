@@ -41,14 +41,13 @@ class SectionsRepositorySpy(SectionsRepositoryInterface):
 
         self.get_sections_by_title_attributes["sections_title"] = sections_title
 
-        check_section_exists = None
+        sections = []
 
         for section in self.sections:
             if section.title == sections_title:
-                check_section_exists = section
-                break
+                sections.append(section)
 
-        return check_section_exists
+        return sections
 
     async def get_course_sections(
         self, _: AsyncClient, course_id: str
