@@ -62,7 +62,6 @@ class SectionsRepositorySpy(SectionsRepositoryInterface):
         for section in self.sections:
             if section.course_id == course_id:
                 courses_sections.append(section)
-                break
 
         return courses_sections
 

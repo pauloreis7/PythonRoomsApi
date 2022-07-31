@@ -1,7 +1,8 @@
-from typing import Type, Dict
+from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.course import Course
 from src.domain.usecases.courses_usecases.find_course_by_id_collector import (
     FindCourseByIdCollectorInterface,
 )
@@ -15,7 +16,9 @@ class FindCourseByIdCollector(FindCourseByIdCollectorInterface):
     def __init__(self, courses_repository: Type[CoursesRepositoryInterface]) -> None:
         self.__courses_repository = courses_repository
 
-    async def find_course_by_id(self, db_session: AsyncSession, course_id: int) -> Dict:
+    async def find_course_by_id(
+        self, db_session: AsyncSession, course_id: int
+    ) -> Course:
         """
         Find course by id and return it
         :param  - db_session: ORM database session

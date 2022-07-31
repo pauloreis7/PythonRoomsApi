@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import CourseCreate
+from src.pydantic_schemas.course import Course, CourseCreate
 from src.domain.usecases.courses_usecases.create_course_collector import (
     CreateCourseCollectorInterface,
 )
@@ -24,7 +24,7 @@ class CreateCourseCollector(CreateCourseCollectorInterface):
 
     async def create_course(
         self, db_session: AsyncSession, course: CourseCreate
-    ) -> bool:
+    ) -> Course:
         """
         Create course model
         :param  - db_session: ORM database session

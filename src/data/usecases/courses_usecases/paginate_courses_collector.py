@@ -1,7 +1,8 @@
-from typing import Type, List, Dict
+from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.course import Course
 from src.domain.usecases.courses_usecases.paginate_courses_collector import (
     PaginateCoursesCollectorInterface,
 )
@@ -16,7 +17,7 @@ class PaginateCoursesCollector(PaginateCoursesCollectorInterface):
 
     async def paginate_courses(
         self, db_session: AsyncSession, skip: int = 0, limit: int = 100
-    ) -> List[Dict]:
+    ) -> List[Course]:
         """
         Read courses and return pagination
         :param  - db_session: ORM database session

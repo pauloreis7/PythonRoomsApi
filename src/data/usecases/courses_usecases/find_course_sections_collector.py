@@ -1,7 +1,8 @@
-from typing import Type, Dict, List
+from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.pydantic_schemas.sections import Section
 from src.domain.usecases.courses_usecases.find_course_sections_collector import (
     FindCourseSectionsCollectorInterface,
 )
@@ -23,7 +24,7 @@ class FindCourseSectionsCollector(FindCourseSectionsCollectorInterface):
 
     async def find_course_sections(
         self, db_session: AsyncSession, course_id: str
-    ) -> List[Dict]:
+    ) -> List[Section]:
         """
         Find course by id and return sections list
         :param  - db_session: ORM database session
