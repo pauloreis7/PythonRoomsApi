@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.sections import SectionCreate
+from src.domain.models.sections import SectionCreate
 
 
 class CreateSectionCollectorControllerInterface(ABC):

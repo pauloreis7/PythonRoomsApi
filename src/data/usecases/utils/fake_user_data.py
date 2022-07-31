@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.pydantic_schemas.user import UserCreate, UserPatch
+from src.domain.models.user import UserCreate, UserPatch
 
 fake = Faker()
 

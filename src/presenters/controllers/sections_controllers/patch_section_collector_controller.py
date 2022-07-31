@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.sections import SectionPatch
+from src.domain.models.sections import SectionPatch
 from src.domain.usecases.sections_usecases.patch_section_collector import (
     PatchSectionCollectorInterface,
 )

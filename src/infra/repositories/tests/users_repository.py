@@ -2,7 +2,7 @@ from typing import List
 from faker import Faker
 from httpx import AsyncClient
 
-from src.pydantic_schemas.user import User, UserCreate, UserPatch
+from src.domain.models.user import User, UserCreate, UserPatch
 from src.data.interfaces.users_repository import UsersRepositoryInterface
 
 fake = Faker()

@@ -2,7 +2,7 @@ from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import Course
+from src.domain.models.course import Course
 from src.domain.usecases.courses_usecases.paginate_courses_collector import (
     PaginateCoursesCollectorInterface,
 )

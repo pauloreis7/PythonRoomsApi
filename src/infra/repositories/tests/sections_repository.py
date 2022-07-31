@@ -2,7 +2,7 @@ from typing import List
 from faker import Faker
 from httpx import AsyncClient
 
-from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
+from src.domain.models.sections import Section, SectionCreate, SectionPatch
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
 
 fake = Faker()

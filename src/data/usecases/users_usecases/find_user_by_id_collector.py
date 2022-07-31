@@ -3,7 +3,7 @@ from typing import Type
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from src.pydantic_schemas.user import User
+from src.domain.models.user import User
 from src.domain.usecases.users_usecases.find_user_by_id_collector import (
     FindUserByIdCollectorInterface,
 )

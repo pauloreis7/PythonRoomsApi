@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import CoursePatch
+from src.domain.models.course import CoursePatch
 from src.domain.usecases.courses_usecases.patch_course_collector import (
     PatchCourseCollectorInterface,
 )

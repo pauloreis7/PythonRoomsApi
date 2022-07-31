@@ -4,7 +4,7 @@ from sqlalchemy import literal_column, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.user import User
-from src.pydantic_schemas.user import UserCreate, UserPatch
+from src.domain.models.user import UserCreate, UserPatch
 from src.data.interfaces.users_repository import UsersRepositoryInterface
 
 

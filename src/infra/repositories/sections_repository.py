@@ -4,7 +4,7 @@ from sqlalchemy import literal_column, select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.models.course import Section
-from src.pydantic_schemas.sections import SectionCreate, SectionPatch
+from src.domain.models.sections import SectionCreate, SectionPatch
 from src.data.interfaces.sections_repository import SectionsRepositoryInterface
 
 

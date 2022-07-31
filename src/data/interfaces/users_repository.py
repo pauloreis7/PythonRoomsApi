@@ -3,7 +3,7 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.user import UserCreate, UserPatch
+from src.domain.models.user import UserCreate, UserPatch
 from src.infra.models.user import User
 
 

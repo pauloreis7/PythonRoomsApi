@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.pydantic_schemas.sections import SectionCreate, SectionPatch
+from src.domain.models.sections import SectionCreate, SectionPatch
 
 fake = Faker()
 

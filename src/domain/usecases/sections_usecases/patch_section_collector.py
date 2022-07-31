@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.sections import SectionPatch
+from src.domain.models.sections import SectionPatch
 
 
 class PatchSectionCollectorInterface(ABC):

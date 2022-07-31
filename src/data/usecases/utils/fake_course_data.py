@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.pydantic_schemas.course import CourseCreate, CoursePatch
+from src.domain.models.course import CourseCreate, CoursePatch
 
 fake = Faker()
 

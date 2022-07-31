@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import CourseCreate
+from src.domain.models.course import CourseCreate
 
 
 class CreateCourseCollectorControllerInterface(ABC):

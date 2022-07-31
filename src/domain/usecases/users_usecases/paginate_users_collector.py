@@ -3,7 +3,7 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.user import User
+from src.domain.models.user import User
 
 
 class PaginateUsersCollectorInterface(ABC):

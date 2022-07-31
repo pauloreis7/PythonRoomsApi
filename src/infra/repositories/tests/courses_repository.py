@@ -2,7 +2,7 @@ from typing import List
 from faker import Faker
 from httpx import AsyncClient
 
-from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
+from src.domain.models.course import Course, CourseCreate, CoursePatch
 from src.data.interfaces.courses_repository import CoursesRepositoryInterface
 
 fake = Faker()

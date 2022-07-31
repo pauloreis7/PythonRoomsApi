@@ -3,7 +3,7 @@ from pytest import mark
 
 from src.errors.http_request_error import HttpRequestError
 
-from src.pydantic_schemas.user import User
+from src.domain.models.user import User
 from src.infra.repositories.tests.users_repository import UsersRepositorySpy
 from src.data.usecases.utils.fake_user_data import create_fake_user
 from src.data.usecases.users_usecases.create_user_collector import CreateUserCollector

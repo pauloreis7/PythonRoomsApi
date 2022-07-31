@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from src.pydantic_schemas.sections import Section, SectionCreate, SectionPatch
+from src.domain.models.sections import Section, SectionCreate, SectionPatch
 from src.infra.config.connection import get_db
 from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.sections_composers.find_section_by_id_composer import (

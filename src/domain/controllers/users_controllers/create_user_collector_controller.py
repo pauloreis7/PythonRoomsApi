@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.user import UserCreate
+from src.domain.models.user import UserCreate
 
 
 class CreateUserCollectorControllerInterface(ABC):

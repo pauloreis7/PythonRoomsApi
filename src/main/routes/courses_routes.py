@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import Course, CourseCreate, CoursePatch
-from src.pydantic_schemas.sections import Section
+from src.domain.models.course import Course, CourseCreate, CoursePatch
+from src.domain.models.sections import Section
 from src.infra.config.connection import get_db
 from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.courses_composers.paginate_courses_composer import (

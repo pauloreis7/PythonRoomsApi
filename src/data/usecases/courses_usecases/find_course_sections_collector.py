@@ -2,7 +2,7 @@ from typing import Type, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.sections import Section
+from src.domain.models.sections import Section
 from src.domain.usecases.courses_usecases.find_course_sections_collector import (
     FindCourseSectionsCollectorInterface,
 )

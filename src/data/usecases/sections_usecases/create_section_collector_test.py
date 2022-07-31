@@ -3,7 +3,7 @@ from pytest import mark
 
 from src.errors.http_request_error import HttpRequestError
 
-from src.pydantic_schemas.sections import Section
+from src.domain.models.sections import Section
 from src.data.usecases.utils.fake_user_data import create_fake_user
 from src.data.usecases.utils.fake_course_data import create_fake_course
 from src.data.usecases.utils.fake_section_data import create_fake_section

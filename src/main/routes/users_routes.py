@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import Course
-from src.pydantic_schemas.user import User, UserCreate, UserPatch
+from src.domain.models.course import Course
+from src.domain.models.user import User, UserCreate, UserPatch
 from src.infra.config.connection import get_db
 from src.presenters.errors.error_controller import handle_errors
 from src.main.composers.users_composers.paginate_users_composer import (

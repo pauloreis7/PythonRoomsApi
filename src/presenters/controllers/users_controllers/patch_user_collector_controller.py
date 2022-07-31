@@ -1,7 +1,7 @@
 from typing import Type
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.pydantic_schemas.user import UserPatch
+from src.domain.models.user import UserPatch
 
 from src.domain.usecases.users_usecases.patch_user_collector import (
     PatchUserCollectorInterface,

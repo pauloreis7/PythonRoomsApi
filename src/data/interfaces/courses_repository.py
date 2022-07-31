@@ -3,7 +3,7 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.pydantic_schemas.course import CourseCreate, CoursePatch
+from src.domain.models.course import CourseCreate, CoursePatch
 from src.infra.models.course import Course
 
 
