@@ -1,13 +1,16 @@
 from typing import AsyncGenerator
+from os import getenv
+from dotenv import load_dotenv
 
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
-SQLALCHEMY_DATABASE_URL = (
-    "postgresql+asyncpg://postgres:c011f0ae@localhost:5433/postgres"
-)
+load_dotenv()
+
+
+SQLALCHEMY_DATABASE_URL = getenv("DATABASE_URL")
 
 
 def create_database_engine(connection_string: str):
