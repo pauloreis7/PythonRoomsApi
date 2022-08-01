@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  postgres-db:
+    container_name: postgres-db
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: c011f0ae
+
+  api:
+    container_name: api
+    command: >
+      sh -c "alembic upgrade heads
+      && python run.py"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PORT: 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres-db
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://postgres:c011f0ae@postgres-db:5432/postgres"
+      ENVIRONMENT: "PROD"
+      PORT: 8080

@@ -9,4 +9,8 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "src.main.config.http_server_configs:app", "--host", "0.0.0.0", "--port", "8080"]
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+
+CMD ["python", "run.py"]
