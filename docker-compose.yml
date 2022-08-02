@@ -14,8 +14,8 @@ services:
   api:
     container_name: api
     command: >
-      sh -c "alembic upgrade heads
-      && python run.py"
+      sh -c "alembic -c src/infra/migrations/alembic.ini upgrade heads
+      && python -m src.run"
     build:
       context: .
       dockerfile: Dockerfile
