@@ -142,7 +142,7 @@ access docs  <http://localhost:8080/docs>
 
 <b>1. Fork the project.</b> <br />
 <b>2. Create a new branch with your changes: git 3. checkout -b feature/my-feature</b> <br />
-<b>3. Save your changes and create a commit message telling what you have done: git commit -m "feature: My new feature</b> <br />
+<b>3. Save your changes and create a commit message telling what you have done: git commit -m "feature: My new feature"</b> <br />
 <b>4. Submit your changes: git push origin my-feature</b>
 
 <a id="author"></a>
