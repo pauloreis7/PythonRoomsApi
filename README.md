@@ -5,7 +5,7 @@
 <h2 align="center">
 
 [![GitHub size](https://img.shields.io/github/repo-size/pauloreis7/PythonRoomsApi?color=purple)](https://github.com/pauloreis7/PythonRoomsApi/issues)
-[![GitHub](https://img.shields.io/badge/types-TypeScript-%23007acc)](https://github.com/pauloreis7/PythonRoomsApi)
+[![GitHub](https://img.shields.io/static/v1?label=python&message=^3.10&color=blue)](https://github.com/pauloreis7/PythonRoomsApi)
 [![GitHub size](https://img.shields.io/github/last-commit/pauloreis7/PythonRoomsApi?color=%23964b00)](https://github.com/pauloreis7/PythonRoomsApi/commits)
 [![GitHub stars](https://img.shields.io/github/stars/pauloreis7/PythonRoomsApi?color=%23f9d71c&style=flat)](https://github.com/pauloreis7/PythonRoomsApi/stargazers)
 [![GitHub license](https://img.shields.io/github/license/pauloreis7/Foodfy)](https://github.com/pauloreis7/PythonRoomsApi/blob/master/LICENSE)
